@@ -35,9 +35,14 @@ var db = new sqlite3.Database(__dirname+"/database.sqlite3");
 
 //****************************************************************************************************
 //Routing
-app.get("/download/*", function(req, res){
-	var path = decodeURIComponent(req.url.slice(9));
-	res.sendFile(path);
+app.get("/download/:key", function(req, res){
+	//var path = decodeURIComponent(req.url.slice(9));
+  var path = FileAPI.getDownloadPath(req.params.key);
+  if(path!=null){
+    res.sendFile(path);
+  }else{
+    res.status(404).send("Invalid key "+req.params.key);
+  }
 });
 
 app.get("/music/:id", function(req, res){
@@ -94,6 +99,51 @@ app.get("*", function(req, res){
 io.on('connection', function (socket) {
     new User(socket);
 });
+
+//****************************************************************************************************
+//File api
+var FileAPI = (function(FileAPI){
+  FileAPI.charForRandomKey = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; //char used to generate random key
+  FileAPI.defaultKeyLength = 32; //default key length
+  FileAPI.downloadLink = {}; //key is a random id, value is the path
+
+  //Generate random key for download link
+  FileAPI.getRandomKey = function(length=FileAPI.defaultKeyLength){
+    var key = '';
+    for(var i=0;i<length;i++){
+      key += FileAPI.charForRandomKey.charAt(Math.floor(Math.random()*FileAPI.charForRandomKey.length));
+    }
+    return key;
+  }
+
+  //Return a key to download given file
+  FileAPI.getDownloadKey = function(path){
+    var key = null;
+    while(key==null || typeof FileAPI.downloadLink[key] != 'undefined'){
+      key = FileAPI.getRandomKey();
+    }
+    FileAPI.downloadLink[key] = path; //Store path under key
+    return key;
+  }
+
+  //Return path for given key
+  FileAPI.getDownloadPath = function(key){
+    if(typeof FileAPI.downloadLink[key] == 'undefined'){
+      console.log("FileAPI.getDownloadPath key "+key+" doesn't exists");
+      return null;
+    }
+    var path = FileAPI.downloadLink[key];
+    delete FileAPI.downloadLink[key]; //Can be used only once
+    return path;
+  }
+
+  //Just return name of file from given path
+  FileAPI.getNameFromPath = function(path){
+    return path.slice(path.lastIndexOf('/')+1);
+  }
+
+  return FileAPI;
+})({});
 
 //****************************************************************************************************
 //Music api
@@ -253,8 +303,6 @@ var MusicAPI = (function(MusicAPI){
 
 //****************************************************************************************************
 //User object
-password = config.password;
-
 function User(socket){
     var that = this;
     this.socket = socket;
@@ -262,59 +310,71 @@ function User(socket){
     this.updateOSInfoTimeout = false;
 
     this.socket.on("message", function (message) {
-        if(message.action=="authentification"){
-            if(message.password==password){
-                that.authentified = true;
-                that.socket.emit("message", {action: "authentification", authentified: that.authentified});
-            }
-        }else if(that.authentified){//Functions which require authentification
-            if(message.action=="getDirectoryContent"){
-                that.getDirectoryContent(message.path);
-            }else if(message.action=="getOSInformation"){
-                df(function(err, disk) {
-									if(err){
-										disk = false;
-									}
-
-									that.socket.emit("message", {
-				                        action: "OSInformation",
-				                        arch: os.arch(),
-				                        freemem: os.freemem(),
-				                        totalmem: os.totalmem(),
-				                        hostname: os.hostname(),
-				                        type: os.type(),
-				                        platform: os.platform(),
-				                        release: os.release(),
-				                        uptime: os.uptime(),
-				                        disk: disk
-				                    });
-
-				          that.updateOSInfoTimeout = setTimeout(function(){ that.updateOSInfo(); }, 1000);
-                });
-            }else if(message.action=="createFile"){
-							that.createFile(message.path, message.name, message.type);
-            }else if(message.action=="openDocument"){
-                fs.readFile(message.path, "utf8", function(err, data){
-									that.socket.emit("message", {action: "openDocument", path: message.path, name: message.name, content: data, error: err});
-                });
-            }else if(message.action=="saveDocument"){
-                fs.writeFile(message.path, message.content, "utf8", function(err){
-                    that.socket.emit("message", {action: "saveDocument", path: message.path, name: message.name, error: err});
-                });
-            }else if(message.action=="downloadDirectory"){
-                var zip = new AdmZip();
-            	zip.addLocalFolder(message.path);
-            	//fs.rmdirSync(__dirname+"/public/download/"+message.name+".zip");
-            	//need to create file : __dirname+"/public/download/"+message.name+".zip"
-            	zip.writeZip(__dirname+"/public/download/"+message.name+".zip");
-            	that.socket.emit("message", {action: "downloadLink", link: "/download/"+message.name+".zip", name: message.name});
-            }else if(message.action=="getMusics"){
-							MusicAPI.getMusics(function(musics){
-								that.socket.emit("message", {action: "setMusics", musics: musics});
-							});
-            }
-        }
+      that.handleMessage(message);
     });
+}
+
+User.prototype.sendMessage = function(action, data){
+  var message = data;
+  message.action = action;
+  this.socket.emit("message", message);
+}
+
+User.prototype.handleMessage = function(message){
+  var self = this;
+  if(message.action=="authentification"){
+    if(message.password==config.password){
+        self.authentified = true;
+        self.sendMessage("authentification", {authentified: self.authentified});
+    }
+  }else if(self.authentified){//Functions which require authentification
+      if(message.action=="getDirectoryContent"){
+        self.getDirectoryContent(message.path);
+      }else if(message.action=="getOSInformation"){
+          df(function(err, disk) {
+            if(err){
+              disk = false;
+            }
+
+            self.sendMessage("OSInformation", {
+                          arch: os.arch(),
+                          freemem: os.freemem(),
+                          totalmem: os.totalmem(),
+                          hostname: os.hostname(),
+                          type: os.type(),
+                          platform: os.platform(),
+                          release: os.release(),
+                          uptime: os.uptime(),
+                          disk: disk
+                      });
+
+            self.updateOSInfoTimeout = setTimeout(function(){ self.updateOSInfo(); }, 1000);
+          });
+      }else if(message.action=="createFile"){
+        self.createFile(message.path, message.name, message.type);
+      }else if(message.action=="openDocument"){
+          fs.readFile(message.path, "utf8", function(err, data){
+            self.sendMessage("openDocument", {path: message.path, name: message.name, content: data, error: err});
+          });
+      }else if(message.action=="saveDocument"){
+          fs.writeFile(message.path, message.content, "utf8", function(err){
+              self.sendMessage("saveDocument", {path: message.path, name: message.name, error: err});
+          });
+      }else if(message.action=="downloadFile"){
+          self.sendMessage("downloadFile", {path: message.path, name: FileAPI.getNameFromPath(message.path), link: "/download/"+FileAPI.getDownloadKey(message.path)});
+      }else if(message.action=="downloadDirectory"){ //TODO Doesn't work currently
+          var zip = new AdmZip();
+          zip.addLocalFolder(message.path);
+          //fs.rmdirSync(__dirname+"/public/download/"+message.name+".zip");
+          //need to create file : __dirname+"/public/download/"+message.name+".zip"
+          zip.writeZip(__dirname+"/public/download/"+message.name+".zip");
+          self.sendMessage("downloadLink", {link: "/download/"+message.name+".zip", name: message.name});
+      }else if(message.action=="getMusics"){
+        MusicAPI.getMusics(function(musics){
+          self.sendMessage("setMusics", {musics: musics});
+        });
+      }
+  }
 }
 
 //Send updated OS informations

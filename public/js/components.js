@@ -296,7 +296,7 @@ function Popup(title, content, ok = true, cancel = false){
     this.title = title;
     this.content = content;
     this.visible = false;
-	this.ok = ok;
+		this.ok = ok;
     this.cancel = cancel;
 
     this.wrap = $("<div>").addClass("popupWrap");
