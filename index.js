@@ -246,7 +246,7 @@ var MusicAPI = (function(MusicAPI){
 								}
 								db.run("INSERT INTO music (title, artist, album, year, genre, duration, path) VALUES (?, ?, ?, ?, ?, ?, ?)",
 									[title, artist, album, year, genre, metadata.duration, fp],
-									function(error){ /*if(error && error.code!="SQLITE_CONSTRAINT") console.log(error);*/ });
+									function(error){ if(error && error.code!="SQLITE_CONSTRAINT") console.log(error); });
 								readableStream.close();
 							});
 						}else{
