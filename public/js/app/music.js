@@ -257,15 +257,17 @@ serverUI.app("music", "music_note", function(app){
 
 	//Add a music to the current playlist
 	this.addToPlaylist = function(music){
-		var alreadyIn = false;
+		var index = -1;
 		for(var m in this.playlist){
 			if(this.playlist[m]==music){
-				alreadyIn = true;
+				index = m;
 				break;
 			}
 		}
 
-		if(!alreadyIn){
+		if(index!=-1){
+			this.play(parseInt(index, 10));
+		}else{
 			this.playlist.push(music);
 			this.playlistContent.append(music.playlistDiv);
 			if(this.index==-1){
