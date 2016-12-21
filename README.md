@@ -28,7 +28,7 @@ Open the app in any browser, the url is : http://*your_ip*:*port* (default port 
  * display uptime
  * display memory
  * display disk memory
- 
+
 #### TODO :
  * shutdown/restart server
  * restart serverUI
@@ -40,22 +40,22 @@ Open the app in any browser, the url is : http://*your_ip*:*port* (default port 
  * can create new file/folder
  * can download a file
  * can open a file in the notepad app
- 
+
 #### TODO :
  * delete/rename/move file/folder
  * connect music file with Music app
  * download multiple files
  * execute a file
- 
+
 ### Notepad
 Use ace text editor from c9
 #### Done :
  * can open a file
  * edit/save it
- 
+
 #### TODO :
  * change langage for text coloration (js, python, c, ...)
- 
+
 ### Music
 Use html5 audio tag to read music, id3 for metadata like title, artist or album and itunes api for cover
 #### Done :
@@ -66,9 +66,11 @@ Use html5 audio tag to read music, id3 for metadata like title, artist or album 
  * basic command (pause/resume, previous/next, volume, mode)
  * reading mode normal (top at the end of playlist), loop_all (repeat the entire playlist), loop_one (repeat current music), random (go to a random music in playlist exept current music)
  * share give a link to share music with someone
- 
+
 #### TODO :
  * display music current time and duration
  * add the possibility to create playlist
  * like music
  * add/remove musicDirectories
+
+ ![alt tag](https://raw.githubusercontent.com/FrancoisMentec/serverUI/master/capture/Music-0.png)
