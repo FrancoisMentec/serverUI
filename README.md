@@ -4,9 +4,9 @@ It works with nodejs sever side, jQuery client side (no framework used) and sock
 
 ## Configure
 Open config.json
-password is the password to connect (default 'pass')
-port is the port which the web server is started (default 8000)
-musicDirectories is an array with the path of every folder where you want to search for music (default [])
+**password** is the password to connect (default 'pass')  
+**port** is the port which the web server is started (default 8000)  
+**musicDirectories** is an array with the path of every folder where you want to search for music (default [])  
 
 ## Install
 Install node.js
