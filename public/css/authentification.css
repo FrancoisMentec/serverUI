@@ -1,0 +1,17 @@
+.authentificationPane{
+	position: fixed;
+	z-index: 10000;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #0D47A1; /* blue 900 */
+	color: white;
+}
+
+.authentificationForm{
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}

@@ -1,0 +1,143 @@
+/****************************************************************************************************/
+/* Fonts */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(/font/MaterialIcons-Regular.ttf);
+}
+
+.material-icons {
+	font-family: 'Material Icons';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 24px;  /* Preferred icon size */
+	display: inline-block;
+	line-height: 1;
+	text-transform: none;
+	letter-spacing: normal;
+	word-wrap: normal;
+	white-space: nowrap;
+	direction: ltr;
+
+	/* Vertical alignement */
+	position: relative;
+	top: -1px;
+
+	/* Support for all WebKit browsers. */
+	-webkit-font-smoothing: antialiased;
+	/* Support for Safari and Chrome. */
+	text-rendering: optimizeLegibility;
+
+	/* Support for Firefox. */
+	-moz-osx-font-smoothing: grayscale;
+
+	/* Support for IE. */
+	font-feature-settings: 'liga';
+
+	/* prevent selection */
+	-webkit-user-select: none;  /* Chrome all / Safari all */
+	-moz-user-select: none;     /* Firefox all */
+	-ms-user-select: none;      /* IE 10+ */
+	user-select: none;          /* Likely future */
+}
+
+/* Roboto Font */
+@font-face {
+    font-family: Roboto-Regular;
+    src: url(/font/Roboto/Roboto-Regular.ttf);
+}
+
+@font-face {
+    font-family: Roboto-Medium;
+    src: url(/font/Roboto/Roboto-Medium.ttf);
+}
+
+@font-face {
+    font-family: Roboto-Bold;
+    src: url(/font/Roboto/Roboto-Bold.ttf);
+}
+
+/****************************************************************************************************/
+/* html, body */
+html, body{
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	font-family: Roboto-Regular;
+	background-color: #FAFAFA; /* gray 100 */
+}
+
+/****************************************************************************************************/
+/* serverUI struct */
+.leftPane{
+	display: inline-block;
+	box-sizing: border-box;
+	width: 200px;
+	height: 100%;
+	background-color: white;
+	border-right: 1px solid #E0E0E0; /* gray 300 */
+	vertical-align: top;
+}
+
+.appsWrap{
+	position: relative;
+	display: inline-block;
+	box-sizing: border-box;
+	width: calc(100% - 200px);
+	height: 100%;
+	vertical-align: top;
+}
+
+/****************************************************************************************************/
+/* app */
+.appContent{
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
+.appContent.withPadding{
+	padding: 5px;
+}
+
+.appButton{
+	width: 100%;
+	margin: 0;
+	text-align: left;
+	border-radius: 0;
+	background-color: transparent;
+	color: black;
+	text-transform: none;
+	font-family: Roboto-Regular;
+}
+
+.appButton::after{
+	display: none;
+}
+
+.appButton.active{
+	color: #2196F3; /* blue 500 */
+}
+
+.appButton:hover{
+	box-shadow: none;
+	background-color: #EEEEEE; /* gray 200 */
+}
+
+.appButton .material-icons{
+	margin-right: 16px;
+}
+
+/****************************************************************************************************/
+/* other */
+.editor{
+	width: 100%;
+	height: 100%;
+}
