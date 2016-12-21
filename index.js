@@ -154,7 +154,7 @@ var MusicAPI = (function(MusicAPI){
 	MusicAPI.defaultCover = "/image/defaultCover.png";
 
 	//Create Database
-	MusicAPI.buildDB = function(){
+	MusicAPI.buildDB = function(callback){
 		//Create music table
 		db.run("CREATE TABLE IF NOT EXISTS music ("+
 			"id INTEGER PRIMARY KEY AUTOINCREMENT,"+
@@ -164,15 +164,21 @@ var MusicAPI = (function(MusicAPI){
 			"year INTEGER DEFAULT -1,"+
 			"genre STRING DEFAULT 'Unknown genre',"+
 			"duration REAL NOT NULL,"+
-			"cover STRING DEFAULT '"+this.defaultCover+"',"+
+			"cover STRING DEFAULT '"+MusicAPI.defaultCover+"',"+
 			"path STRING NOT NULL UNIQUE"+
-		")", function(error){ if(error) console.log(error); });
-
-		var nbMusicFound = 0;
-		for(var d in this.directories){
-			nbMusicFound += this.searchMusic(this.directories[d]);
-		}
-		return nbMusicFound;
+		")", function(error){
+          if(error){
+            console.log(error);
+          }else{
+            var nbMusicFound = 0;
+        		for(var d in MusicAPI.directories){
+        			nbMusicFound += MusicAPI.searchMusic(MusicAPI.directories[d]);
+        		}
+            if(typeof callback == 'function'){
+              callback(nbMusicFound);
+            }
+          }
+    });
 	}
 
 	//Search music inside given directory and all subdirectories (Function is not recursive)
@@ -240,7 +246,7 @@ var MusicAPI = (function(MusicAPI){
 								}
 								db.run("INSERT INTO music (title, artist, album, year, genre, duration, path) VALUES (?, ?, ?, ?, ?, ?, ?)",
 									[title, artist, album, year, genre, metadata.duration, fp],
-									function(error){ if(error && error.code!="SQLITE_CONSTRAINT") console.log(error); });
+									function(error){ /*if(error && error.code!="SQLITE_CONSTRAINT") console.log(error);*/ });
 								readableStream.close();
 							});
 						}else{
@@ -475,10 +481,11 @@ User.prototype.createFile = function(path, name, type){
 //Start server
 console.log("MusicAPI build db...");
 console.time("buildDB");
-var n = MusicAPI.buildDB();
-console.timeEnd("buildDB");
-console.log(n+" musics found, musicmetadata is currently parsing them");
+MusicAPI.buildDB(function(n){
+  console.timeEnd("buildDB");
+  console.log(n+" musics found, musicmetadata is currently parsing them");
 
-server.listen(config.port, function(){
-    console.log("serverUI started on port "+config.port);
+  server.listen(config.port, function(){
+      console.log("serverUI started on port "+config.port);
+  });
 });
