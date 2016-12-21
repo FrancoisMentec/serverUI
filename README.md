@@ -3,7 +3,7 @@ It's a web UI built with nodejs to manage your computer from everywhere in a bro
 It works with nodejs sever side, jQuery client side (no framework used) and socket.io to communicate with server
 
 ## Configure
-Open config.json
+Open config.json  
 **password** is the password to connect (default 'pass')  
 **port** is the port which the web server is started (default 8000)  
 **musicDirectories** is an array with the path of every folder where you want to search for music (default [])  
