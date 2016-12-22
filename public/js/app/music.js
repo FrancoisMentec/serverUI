@@ -320,7 +320,7 @@ serverUI.app("music", "music_note", function(app){
 
 		this.controlPaneCover.attr("src", music.cover);
 		this.currentMusicTitle.html(music.title);
-		this.currentMusicArtist.html(music.artist);
+		this.currentMusicArtist.html(music.artist+' - '+music.album);
 	}
 
 	this.next = function(manual=true){

@@ -68,7 +68,14 @@ app.get("/music/cover/:id", function(req, res){
 			var term = (properTitle+"+"+properArtist).replace(new RegExp(" +", 'g'), "+");
 			var url = "http://itunes.apple.com/search?term="+term+"&limit=1";
 			http.get(url, function(itunesRes) {
+        var statusCode = itunesRes.statusCode;
 				var body = "";
+
+        if (statusCode !== 200) {
+          console.log('itunes API returned an error for '+url);
+          res.redirect(music.cover);
+          return 
+        }
 
 				itunesRes.on("data", function(chunk){
 		        body += chunk;
