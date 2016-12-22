@@ -83,7 +83,10 @@ app.get("/music/cover/:id", function(req, res){
 						}
 						res.redirect(cover);
 		    });
-			});
+			}).on('error', function(error){
+        console.log('Failed to load '+url+' check your internet connection');
+        res.redirect(music.cover);
+      });
 		}else{
 			res.redirect(music.cover);
 		}
