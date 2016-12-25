@@ -71,7 +71,12 @@ html, body{
 
 /****************************************************************************************************/
 /* serverUI struct */
+.main-top-bar{
+  padding-left: 0 !important; /* to align toggle left pane button with apps icons */ 
+}
+
 .leftPane{
+  transition: width 0.2s;
 	display: inline-block;
 	box-sizing: border-box;
 	width: 200px;
@@ -79,15 +84,26 @@ html, body{
 	background-color: white;
 	border-right: 1px solid #E0E0E0; /* gray 300 */
 	vertical-align: top;
+  overflow: auto;
+}
+
+.leftPane.hidden{
+  width: 0;
+  border-width: 0;
 }
 
 .appsWrap{
+  transition: width 0.2s;
 	position: relative;
 	display: inline-block;
 	box-sizing: border-box;
 	width: calc(100% - 200px);
 	height: 100%;
 	vertical-align: top;
+}
+
+.appsWrap.full-width{
+  width: 100%;
 }
 
 /****************************************************************************************************/
@@ -116,6 +132,7 @@ html, body{
 	color: black;
 	text-transform: none;
 	font-family: Roboto-Regular;
+  white-space: nowrap;
 }
 
 .appButton::after{

@@ -1,8 +1,9 @@
 //****************************************************************************************************
 // serverUI
 function ServerUI(){
-	var that = this;
+	var self = this;
 	this.authentified = false;
+	this.leftPaneVisible = true;
 	this.currentApp = false;
 	this.apps = new Object();
 
@@ -10,12 +11,18 @@ function ServerUI(){
 	this.authentificationPane = $("<div>").addClass("authentificationPane dark").appendTo("body");
 	this.authentificationForm = $("<div>").addClass("authentificationForm").appendTo(this.authentificationPane);
 	this.authentificationPassword = new TextField("password", this.authentificationForm, true, function(e){
-		that.emit("authentification", {password: this.val()});
+		self.emit("authentification", {password: this.val()});
 	}, true);
 
-	this.topBar = $("<div>").addClass("topBar").html("serverUI").appendTo("body");
-	this.content = $("<div>").addClass("content").appendTo("body");
+	//top bar
+	this.topBar = $("<div>").addClass('main-top-bar topBar dark').appendTo("body");
+	this.toggleLeftPaneButton = $('<button>').addClass('flatButton iconButton material-icons').html('close').appendTo(this.topBar).click(function(){
+		self.toggleLeftPane();
+	});
+	this.topBar.append('serverUI');
 
+	//content
+	this.content = $("<div>").addClass("content").appendTo("body");
 	this.leftPane = $("<div>").addClass("leftPane").appendTo(this.content);
 	this.appsWrap = $("<div>").addClass("appsWrap").appendTo(this.content);
 
@@ -28,16 +35,16 @@ function ServerUI(){
 			switch(message.action){
 				//general
 				case "authentification":
-					that.authentification(message.authentified);
+					self.authentification(message.authentified);
 					break;
 			}
 
-			that.triggerEvent(message);
+			self.triggerEvent(message);
 		});
 
 	this.socket.on('disconnect',function(){
-		that.authentification(false);
-		that.triggerEvent({action: "authentification", authentified: false});
+		self.authentification(false);
+		self.triggerEvent({action: "authentification", authentified: false});
 	});
 }
 
@@ -55,6 +62,22 @@ ServerUI.prototype.authentification = function(authentified){
 			this.authentificationPassword.val("");
 			this.authentificationPane.fadeIn();
 		}
+	}
+}
+
+ServerUI.prototype.toggleLeftPane = function(visible){
+	if(typeof visible != 'boolean'){
+		visible = !this.leftPaneVisible;
+	}
+	this.leftPaneVisible = visible;
+	if(this.leftPaneVisible){
+		this.leftPane.removeClass('hidden');
+		this.appsWrap.removeClass('full-width');
+		this.toggleLeftPaneButton.html('close');
+	}else{
+		this.leftPane.addClass('hidden');
+		this.appsWrap.addClass('full-width');
+		this.toggleLeftPaneButton.html('menu');
 	}
 }
 
