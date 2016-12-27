@@ -74,7 +74,7 @@ app.get("/music/cover/:id", function(req, res){
         if (statusCode !== 200) {
           console.log('itunes API returned an error for '+url);
           res.redirect(music.cover);
-          return 
+          return
         }
 
 				itunesRes.on("data", function(chunk){
@@ -339,10 +339,8 @@ User.prototype.sendMessage = function(action, data){
 User.prototype.handleMessage = function(message){
   var self = this;
   if(message.action=="authentification"){
-    if(message.password==config.password){
-        self.authentified = true;
-        self.sendMessage("authentification", {authentified: self.authentified});
-    }
+    self.authentified = (message.password === config.password);
+    self.sendMessage("authentification", {authentified: self.authentified});
   }else if(self.authentified){//Functions which require authentification
       if(message.action=="getDirectoryContent"){
         self.getDirectoryContent(message.path);

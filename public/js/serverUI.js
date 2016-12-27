@@ -16,10 +16,15 @@ function ServerUI(){
 
 	//top bar
 	this.topBar = $("<div>").addClass('main-top-bar topBar dark').appendTo("body");
-	this.toggleLeftPaneButton = $('<button>').addClass('flatButton iconButton material-icons').html('close').appendTo(this.topBar).click(function(){
+	this.toggleLeftPaneButton = $('<button>').addClass('flatButton iconButton material-icons').html('arrow_back').appendTo(this.topBar).click(function(){
 		self.toggleLeftPane();
 	});
 	this.topBar.append('serverUI');
+
+	this.topBarLeftPane = $('<div>').addClass('topBarLeftPane').appendTo(this.topBar);
+	this.logoutButton = $('<button>').addClass('flatButton iconButton material-icons').html('power_settings_new').appendTo(this.topBarLeftPane).click(function(){
+		self.emit("authentification", {password: false});
+	});
 
 	//content
 	this.content = $("<div>").addClass("content").appendTo("body");
@@ -73,7 +78,7 @@ ServerUI.prototype.toggleLeftPane = function(visible){
 	if(this.leftPaneVisible){
 		this.leftPane.removeClass('hidden');
 		this.appsWrap.removeClass('full-width');
-		this.toggleLeftPaneButton.html('close');
+		this.toggleLeftPaneButton.html('arrow_back');
 	}else{
 		this.leftPane.addClass('hidden');
 		this.appsWrap.addClass('full-width');
