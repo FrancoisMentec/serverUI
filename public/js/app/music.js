@@ -281,7 +281,7 @@ serverUI.app("music", "music_note", function(app){
 	this.clearPlaylist = function(){
 		this.play(null);
 		for(var m in this.playlist){
-			this.playlist[m].removeFromPlayList();
+			this.playlist[m].removeFromPlaylist();
 		}
 		this.playlist = [];
 	}
