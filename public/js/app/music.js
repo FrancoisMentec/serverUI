@@ -1,5 +1,6 @@
 serverUI.app("music", "music_note", function(app){
 	var that = this;
+	var self = this;
 	this.musics = [];
 	this.artistsName = [];
 	this.artists = {};
@@ -371,6 +372,8 @@ serverUI.app("music", "music_note", function(app){
 	app.onServer("authentification", function(data){
 		if(data.authentified){
 			serverUI.emit("getMusics");
+		}else{
+			self.audio.trigger('pause');
 		}
 	});
 
