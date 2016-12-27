@@ -252,7 +252,7 @@ serverUI.app("music", "music_note", function(app){
 		});
 		this.libraryMusicContent.empty();
 		for(var m in this.musics){
-			this.libraryMusicContent.append(this.musics[m].musicDiv);
+			this.libraryMusicContent.append(this.musics[m].musicDiv.div);
 		}
 	}
 
@@ -281,7 +281,7 @@ serverUI.app("music", "music_note", function(app){
 	this.clearPlaylist = function(){
 		this.play(null);
 		for(var m in this.playlist){
-			this.playlist[m].playlistDiv.detach();
+			this.playlist[m].removeFromPlayList();
 		}
 		this.playlist = [];
 	}
@@ -461,10 +461,10 @@ function Music(data, musicApp){
 	this.duration = data.duration;
 	this.genre = data.genre;
 	this.year = data.year;
+	this.divs = [];
 
-	this.musicDiv = $("<div>").addClass("music").text(this.title).click(function(){
-		that.addToPlaylist();
-	});
+	this.musicDiv = new MusicDiv(this);
+	this.divs.push(this.musicDiv);
 
 	this.playlistDiv = $("<div>").addClass("music").text(this.title).click(function(){
 		that.musicApp.play(that);
@@ -472,14 +472,23 @@ function Music(data, musicApp){
 }
 
 Music.prototype.div = function(){
-	var that = this;
-	return $("<div>").addClass("music").text(this.title).click(function(){
-		that.addToPlaylist();
-	});
+	var div = new MusicDiv(this);
+	this.divs.push(div);
+	return div.div;
 }
 
-Music.prototype.addToPlaylist = function(playing){
+Music.prototype.addToPlaylist = function(){
+	for(var d in this.divs){
+		this.divs[d].icon = 'playlist_add_check';
+	}
 	this.musicApp.addToPlaylist(this);
+}
+
+Music.prototype.removeFromPlaylist = function(){
+	this.playlistDiv.detach();
+	for(var d in this.divs){
+		this.divs[d].icon = 'playlist_add';
+	}
 }
 
 Music.prototype.setVisible = function(visible){
@@ -493,7 +502,38 @@ Music.prototype.setVisible = function(visible){
 Music.prototype.setPlaying = function(playing){
 	if(playing){
 		this.playlistDiv.addClass("active");
+		for(var d in this.divs){
+			this.divs[d].icon = 'playlist_play';
+		}
 	}else{
 		this.playlistDiv.removeClass("active");
+		for(var d in this.divs){
+			this.divs[d].icon = 'playlist_add_check';
+		}
 	}
+}
+
+//Music div
+function MusicDiv(music){
+	var self = this;
+	this.music = music;
+	this.div = $('<div>').addClass('music').click(function(){
+		self.music.addToPlaylist();
+	});
+	this._icon = $('<span>').addClass('material-icons').html('playlist_add').appendTo(this.div);
+	this.title = $('<span>').text(this.music.title).appendTo(this.div);
+}
+
+Object.defineProperty(MusicDiv.prototype, 'icon', {
+	set: function(icon){
+		this._icon.html(icon);
+	}
+});
+
+MusicDiv.prototype.show = function(){
+	this.div.show();
+}
+
+MusicDiv.prototype.hide = function(){
+	this.div.hide();
 }

@@ -235,6 +235,11 @@
   text-overflow: ellipsis;
 }
 
+.music *{
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
 .music:hover{
   background-color: #F5F5F5;
 }
