@@ -38,9 +38,9 @@ serverUI.app("music", "music_note", function(app){
 		}
 	});
 	this.libraryArtistContent = $("<div>").addClass("music-library-content").appendTo(this.libraryArtist).scroll(function(){
-		if(that.libraryArtistContent.scrollTop()>0){
+		if (that.libraryArtistContent.scrollTop() > 0) {
 			that.libraryArtist.addClass("scrolled");
-		}else{
+		} else {
 			that.libraryArtist.removeClass("scrolled");
 		}
 	});
@@ -412,7 +412,7 @@ function Playlist(name){
 	this.expanded = false;
 
 	this.div = $("<div>").addClass("playlist");
-	this.nameDiv = $("<div>").addClass("playlist-name").text(this.name).appendTo(this.div).click(function(){
+	this.nameDiv = $("<div>").addClass("playlist-name").text(this.name + ' (' + this.musics.length + ')').appendTo(this.div).click(function(){
 		that.toggle();
 	});
 	this.musicsDiv = $("<div>").addClass("playlist-musics").appendTo(this.div);
@@ -440,6 +440,7 @@ Playlist.prototype.setVisible = function(visible){
 
 Playlist.prototype.addMusic = function(music){
 	this.musics.push(music);
+	this.nameDiv.text(this.name + ' (' + this.musics.length + ')')
 	this.musicsDiv.append(music.div());
 }
 
