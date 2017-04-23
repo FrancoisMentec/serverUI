@@ -405,23 +405,28 @@ serverUI.app("music", "music_note", function(app){
 });
 
 //Playlist (for artist, album, and playlist)
-function Playlist(name){
-	var that = this;
-	this.name = name;
-	this.musics = [];
-	this.expanded = false;
+function Playlist (name) {
+	var that = this
+	this.name = name.length > 0
+		? name
+		: 'no name'
+	this.musics = []
+	this.expanded = false
+	this.backgroundLoaded = false
 
-	this.div = $("<div>").addClass("playlist");
-	this.nameDiv = $("<div>").addClass("playlist-name").text(this.name + ' (' + this.musics.length + ')').appendTo(this.div).click(function(){
-		that.toggle();
-	});
-	this.musicsDiv = $("<div>").addClass("playlist-musics").appendTo(this.div);
-	this.playAllButton = $("<div>").addClass("music").html("Play all musics").appendTo(this.musicsDiv).click(function(){
-		that.playAll();
-	});
+	this.div = $("<div>").addClass("playlist")
+	this.backgroundDiv = $('<div>').addClass('playlist-background').appendTo(this.div)
+	this.nameDiv = $("<div>").addClass("playlist-name").text(this.name).appendTo(this.div).click(function () {
+		that.toggle()
+	})
+	this.numberDiv = $('<div>').addClass('badge').html(this.musics.length).appendTo(this.nameDiv)
+	this.musicsDiv = $("<div>").addClass("playlist-musics").appendTo(this.div)
+	this.playAllButton = $("<div>").addClass("music").html("Play all musics").appendTo(this.musicsDiv).click(function () {
+		that.playAll()
+	})
 }
 
-Playlist.prototype.toggle = function(){
+Playlist.prototype.toggle = function () {
 	this.expanded = !this.expanded;
 	if(this.expanded){
 		this.div.addClass("expanded");
@@ -438,10 +443,14 @@ Playlist.prototype.setVisible = function(visible){
 	}
 }
 
-Playlist.prototype.addMusic = function(music){
-	this.musics.push(music);
-	this.nameDiv.text(this.name + ' (' + this.musics.length + ')')
-	this.musicsDiv.append(music.div());
+Playlist.prototype.addMusic = function (music) {
+	this.musics.push(music)
+	this.numberDiv.html(this.musics.length)
+	if (!this.backgroundLoaded && !music.hasDefaultCover) {
+			this.backgroundLoaded = true
+			this.backgroundDiv.css('background', 'linear-gradient(to right, rgba(255, 255, 255, 255), rgba(255, 255, 255, 0)), url(' + music.cover + '/500)  no-repeat center')
+	}
+	this.musicsDiv.append(music.div())
 }
 
 Playlist.prototype.playAll = function(){
@@ -458,7 +467,8 @@ function Music(data, musicApp){
 	this.title = data.title;
 	this.artist = data.artist;
 	this.album = data.album;
-	this.cover = "/music/cover/"+this.id;
+	this.hasDefaultCover = data.hasDefaultCover
+	this.cover = data.cover // = /music/cover/:id
 	this.duration = data.duration;
 	this.genre = data.genre;
 	this.year = data.year;

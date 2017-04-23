@@ -59,14 +59,14 @@ app.get("/music/:id", function(req, res){
 	});
 });
 
-app.get("/music/cover/:id", function(req, res){
+app.get("/music/cover/:id/:size?", function(req, res){
 	//https://itunes.apple.com/search?term=jack+johnson&limit=1
-	MusicAPI.getMusic(req.params.id, function(err, music){
-		if(music.cover==MusicAPI.defaultCover){
+	MusicAPI.getMusic(req.params.id, function (err, music) {
+		if (music.cover === MusicAPI.defaultCover) {
 			var properTitle = music.title.replace(new RegExp(/[^A-Za-z0-9 ]/, 'g'), "");
 			var properArtist = music.artist.replace(new RegExp(/[^A-Za-z0-9 ]/, 'g'), "");
-			var term = (properTitle+"+"+properArtist).replace(new RegExp(" +", 'g'), "+");
-			var url = "http://itunes.apple.com/search?term="+term+"&limit=1";
+			var term = (properTitle + "+" + properArtist).replace(new RegExp(" +", 'g'), "+");
+			var url = "http://itunes.apple.com/search?term=" + term + "&limit=1";
 			http.get(url, function(itunesRes) {
         var statusCode = itunesRes.statusCode;
 				var body = "";
@@ -91,14 +91,19 @@ app.get("/music/cover/:id", function(req, res){
 						res.redirect(cover);
 		    });
 			}).on('error', function(error){
-        console.log('Failed to load '+url+' check your internet connection');
+        console.log('Failed to load ' + url + ' check your internet connection');
         res.redirect(music.cover);
       });
-		}else{
-			res.redirect(music.cover);
+		} else {
+      var size = req.params.size
+      var cover = music.cover
+      if (size) {
+        cover = cover.replace('100x100', size + 'x' + size)
+      }
+			res.redirect(cover)
 		}
-	});
-});
+	})
+})
 
 app.get("*", function(req, res){
 	res.sendFile(__dirname+"/public/index.html");
@@ -112,7 +117,7 @@ io.on('connection', function (socket) {
 
 //****************************************************************************************************
 //File api
-var FileAPI = (function(FileAPI){
+var FileAPI = ( function (FileAPI) {
   FileAPI.charForRandomKey = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; //char used to generate random key
   FileAPI.defaultKeyLength = 32; //default key length
   FileAPI.downloadLink = {}; //key is a random id, value is the path
@@ -157,7 +162,7 @@ var FileAPI = (function(FileAPI){
 
 //****************************************************************************************************
 //Music api
-var MusicAPI = (function(MusicAPI){
+var MusicAPI = ( function (MusicAPI) {
 	MusicAPI.supportedCodingFormat = [".wav", ".mp3", ".mp4", ".ogg", ".webm", ".wma", ".wmv"]; //Supported audio coding format
 	//Directories where to search music
 	MusicAPI.directories = config.musicDirectories;
@@ -174,7 +179,7 @@ var MusicAPI = (function(MusicAPI){
 			"year INTEGER DEFAULT -1,"+
 			"genre STRING DEFAULT 'Unknown genre',"+
 			"duration REAL NOT NULL,"+
-			"cover STRING DEFAULT '"+MusicAPI.defaultCover+"',"+
+			"cover STRING DEFAULT '" + MusicAPI.defaultCover + "',"+
 			"path STRING NOT NULL UNIQUE"+
 		")", function(error){
           if(error){
@@ -275,14 +280,16 @@ var MusicAPI = (function(MusicAPI){
 
 	//Return all musics in an array
 	MusicAPI.getMusics = function(callback){
-		db.all("SELECT id, title, artist, album, year, genre, duration FROM music", function(err, rows) {
-	      if(err){
-					console.log(err);
-				}else{
+		db.all("SELECT id, title, artist, album, year, genre, duration, cover FROM music", function(err, rows) {
+	      if (err) {
+					console.log(err)
+				} else {
 					for(var r in rows){
-						rows[r].title = String(rows[r].title);
-						rows[r].artist = String(rows[r].artist);
-						rows[r].album = String(rows[r].album);
+						rows[r].title = String(rows[r].title)
+						rows[r].artist = String(rows[r].artist)
+						rows[r].album = String(rows[r].album)
+            rows[r].hasDefaultCover = rows[r].cover == MusicAPI.defaultCover
+            rows[r].cover = '/music/cover/' + rows[r].id
 					}
 					callback(rows);
 				}

@@ -45,6 +45,23 @@ h6{
 		user-select: none;
 }
 
+.badge {
+	display: inline-block;
+	box-sizing: border-box;
+	min-width: 22px;
+	height: 22px;
+	line-height: 22px;
+	padding-left: 5px;
+	padding-right: 5px;
+  margin: 5px;
+	border-radius: 11px;
+	color: white;
+	font-family: RobotoCondensed-Regular;
+	font-size: 12px;
+	text-align: center;
+	background-color: #009688; /* teal 500 */
+}
+
 /****************************************************************************************************/
 /* Separator */
 hr {
