@@ -126,10 +126,11 @@ serverUI.app("music", "music_note", function(app){
 	});
 	this.shareButton = $("<button>").addClass("flatButton iconButton material-icons").html("share").appendTo(this.buttonsWrap).click(function(){
 		if(that.index>-1){
-			var url = location.origin+"/music/"+that.playlist[that.index].id;
-			var popup = new Popup("Share", "<a target='_blank' href='"+url+"'>"+url+"</a>", function(popup){
+			var music = that.playlist[that.index]
+			var url = location.origin + '/music/' + music.id
+			var popup = new Popup("Share", "<a target='_blank' href='"+url+"'>"+url+'</a><br><br>Or<br><br><a href="' + url + '" download="' + music.title + '">download</a>', function (popup) {
 				popup.delete();
-			});
+			})
 			popup.show();
 		}
 	});
@@ -525,7 +526,7 @@ Music.prototype.setPlaying = function(playing){
 }
 
 //Music div
-function MusicDiv(music){
+function MusicDiv (music) {
 	var self = this;
 	this.music = music;
 	this.div = $('<div>').addClass('music').click(function(){
