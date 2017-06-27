@@ -163,7 +163,7 @@ var FileAPI = ( function (FileAPI) {
 //****************************************************************************************************
 //Music api
 var MusicAPI = ( function (MusicAPI) {
-	MusicAPI.supportedCodingFormat = [".wav", ".mp3", ".mp4", ".ogg", ".webm", ".wma", ".wmv"]; //Supported audio coding format
+	MusicAPI.supportedCodingFormat = [".wav", ".mp3", ".mp4", ".ogg", ".webm", ".wma", ".wmv", '.m4a']; //Supported audio coding format
 	//Directories where to search music
 	MusicAPI.directories = config.musicDirectories;
 	MusicAPI.defaultCover = "/image/defaultCover.png";
