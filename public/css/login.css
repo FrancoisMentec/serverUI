@@ -1,0 +1,27 @@
+#login {
+  transition: 0.2s;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--primary);
+  z-index: 1000;
+}
+
+#login.logged {
+  top: -100%;
+}
+
+#login-form {
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#login-error {
+  color: var(--danger);
+  height: 1em;
+}

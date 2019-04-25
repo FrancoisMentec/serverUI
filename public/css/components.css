@@ -1,0 +1,63 @@
+/****************************************************************************************************/
+/* Text fields */
+
+text-field {
+  display: inline-block;
+  position: relative;
+  width: 280px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+text-field input {
+  position: relative;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px solid var(--primary-light);
+  border-radius: 4px;
+  outline: none;
+  color: var(--primary-text);
+  width: 100%;
+  height: 56px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+text-field:hover input {
+  border: 2px solid var(--primary-light);
+}
+
+text-field.focus input {
+  border: 2px solid var(--secondary);
+}
+
+text-field:hover input, text-field.focus input {
+  padding-left: 11px;
+  padding-right: 11px;
+}
+
+text-field label {
+  display: inline-block;
+  transition: 0.2s;
+  position: absolute;
+  top: 50%;
+  left: 9px;
+  color: var(--primary-light);
+  padding-left: 4px;
+  padding-right: 4px;
+  background-color: var(--primary);
+  transform: translateY(-50%);
+  z-index: 1;
+  pointer-events: none;
+  font-size: 1em;
+}
+
+text-field.focus label {
+  color: var(--secondary);
+}
+
+text-field.focus label, text-field.not-empty label {
+  transform: none;
+  top: -8px;
+  font-size: 0.8em;
+}

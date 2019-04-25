@@ -7,12 +7,23 @@
     <title>serverUI</title>
 		<!-- CSS -->
     <link rel="stylesheet" type="text/css" href="/css/main.css">
+		<link rel="stylesheet" type="text/css" href="/css/components.css">
+		<link rel="stylesheet" type="text/css" href="/css/login.css">
 	</head>
 	<body>
-		hello
+		<div id="login">
+			<div id="login-form">
+				<h1>Login</h1>
+				<text-field id="login-user" label="User"></text-field><br>
+				<text-field id="login-password" label="Password" type="password"></text-field>
+				<p id="login-error"></p>
+			</div>
+		</div>
 		<!-- Javascript -->
 		<!-- serverUI -->
+		<script type="text/javascript" src="/js/components.js" charset="utf-8"></script>
 		<script type="text/javascript" src="/js/main.js" charset="utf-8"></script>
+		<script type="text/javascript" src="/js/login.js" charset="utf-8"></script>
 
 		<script>
 			//serverUI.emit("authentification", {password: "pass"});

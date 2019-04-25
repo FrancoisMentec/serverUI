@@ -1,38 +1,36 @@
+const fs = require('fs')
 const express = require('express')
 const http = require('http')
-const argon2 = require('argon2')
 
-var app = express()
-var server = http.Server(app)
+let app = express()
+let server = http.Server(app)
 
 app.use(express.static(__dirname + '/public'))
+app.use(express.json())
 
 //****************************************************************************************************
 //Config
 
-try {
-  const hash = argon2.hash("password");
-  console.log(hash)
-} catch (err) {
-  //...
-}
-
-console.log('Loading config from config.json ...')
-var config = {
+const CONFIG_PATH = __dirname + '/config.json'
+const DEFAULT_CONFIG = {
   'port': 8000,
   'users': {
     'root': {
-      'password': 1,
+      'password': 'root',
       'type': 'root'
     }
   }
 }
+let config = null
 
 try {
-	var content = fs.readFileSync(__dirname + '/config.json')
-	config = JSON.parse(content)
+  if (!fs.existsSync(CONFIG_PATH)) {
+    fs.writeFileSync(CONFIG_PATH, JSON.stringify(DEFAULT_CONFIG))
+  }
+  config = JSON.parse(fs.readFileSync(CONFIG_PATH))
 } catch(err) {
-	console.log('Can\'t find config.json, default configuration loaded')
+	console.err(err)
+  process.exit(1)
 }
 
 //****************************************************************************************************
@@ -40,6 +38,24 @@ try {
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html')
+})
+
+app.post('/login', (req, res) => {
+  let r = {
+    error: true,
+    message: null
+  }
+  if (typeof config.users[req.body.login] != 'undefined') {
+    if (config.users[req.body.login].password === req.body.password) {
+      r.error = false
+      r.message = 'Logged'
+    } else {
+      r.message = 'Wrong password'
+    }
+  } else {
+    r.message = 'Unknown user'
+  }
+  res.send(JSON.stringify(r))
 })
 
 app.get('*', (req, res) => {

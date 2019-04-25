@@ -64,12 +64,34 @@
 }
 
 /****************************************************************************************************/
+/* Variables */
+
+:root {
+  --primary: #212121;
+  --primary-light: #484848;
+  --primary-text: #ffffff;
+  --secondary: #82ffa5;
+  --danger: #f44336;
+}
+
+/****************************************************************************************************/
 /* html, body */
+
 html, body{
 	width: 100%;
 	height: 100%;
 	padding: 0;
 	margin: 0;
 	font-family: Roboto-Regular;
-	background-color: #FAFAFA; /* gray 100 */
+	background-color: var(--primary);
+  color: var(--primary-text);
+}
+
+/****************************************************************************************************/
+/* Universal class */
+
+.wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
