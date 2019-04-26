@@ -20,17 +20,23 @@
 				<text-field id="login-user" label="User"></text-field><br>
 				<text-field id="login-password" label="Password" type="password"></text-field>
 				<p id="login-error"></p>
+				<check-box id="login-remember-me" label="Remember me"></check-box>
 			</div>
 		</div>
 
 		<!-- Top Bar -->
 		<div id="top-bar">
-
+			<button onclick="logout()">logout</button>
 		</div>
 
 		<!-- Side Bar -->
 		<div id="side-bar">
 
+		</div>
+
+		<!-- Content -->
+		<div id="content">
+			<file-explorer></file-explorer>
 		</div>
 		<!-- Javascript -->
 		<!-- serverUI -->
@@ -39,9 +45,9 @@
 		<script type="text/javascript" src="/js/login.js" charset="utf-8"></script>
 
 		<script>
-			loginUser.value = 'root'
+			/*loginUser.value = 'root'
 			loginPassword.value = 'root'
-			login()
+			login()*/
 		</script>
 	</body>
 </html>

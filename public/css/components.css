@@ -1,3 +1,7 @@
+input {
+  outline: none;
+}
+
 /****************************************************************************************************/
 /* Text fields */
 
@@ -15,7 +19,6 @@ text-field input {
   background: transparent;
   border: 1px solid var(--primary-light);
   border-radius: 4px;
-  outline: none;
   color: var(--primary-text);
   width: 100%;
   height: 56px;
@@ -47,7 +50,6 @@ text-field label {
   padding-right: 4px;
   background-color: var(--primary);
   transform: translateY(-50%);
-  z-index: 1;
   pointer-events: none;
   font-size: 1em;
 }
@@ -60,4 +62,75 @@ text-field.focus label, text-field.not-empty label {
   transform: none;
   top: -8px;
   font-size: 0.8em;
+}
+
+/****************************************************************************************************/
+/* Checkbox */
+
+check-box {
+  display: inline-block;
+  height: 32px;
+  line-height: 32px;
+}
+
+check-box input {
+  transition: 0.2s;
+  position: relative;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-block;
+  border: 2px solid var(--primary-light);
+  border-radius: 4px;
+  background-color: transparent;
+  margin: 0;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+check-box input:before, check-box input:after {
+  transition: 0.2s;
+  position: absolute;
+  content: '';
+  display: inline-block;
+  background-color: transparent;
+}
+
+check-box input:before {
+  top: 10px;
+  left: 7px;
+  width: 10px;
+  height: 3px;
+  transform: rotate(-45deg);
+}
+
+check-box input:after {
+  top: 11px;
+  left: 4px;
+  width: 7px;
+  height: 3px;
+  transform: rotate(45deg);
+}
+
+check-box input:checked {
+  border: 2px solid var(--secondary);
+  background-color: var(--secondary);
+}
+
+check-box input:checked:before, check-box input:checked:after {
+  background-color: var(--primary);
+}
+
+check-box label {
+  transition: 0.2s;
+  margin-left: 4px;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+}
+
+check-box input:checked + label {
+  color: var(--secondary);
 }

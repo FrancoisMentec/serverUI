@@ -1,37 +1,15 @@
-const fs = require('fs')
 const express = require('express')
 const http = require('http')
+const cookieParser = require('cookie-parser')
+
+const config = require('./js/config.js')
 
 let app = express()
 let server = http.Server(app)
 
 app.use(express.static(__dirname + '/public'))
 app.use(express.json())
-
-//****************************************************************************************************
-//Config
-
-const CONFIG_PATH = __dirname + '/config.json'
-const DEFAULT_CONFIG = {
-  'port': 8000,
-  'users': {
-    'root': {
-      'password': 'root',
-      'type': 'root'
-    }
-  }
-}
-let config = null
-
-try {
-  if (!fs.existsSync(CONFIG_PATH)) {
-    fs.writeFileSync(CONFIG_PATH, JSON.stringify(DEFAULT_CONFIG))
-  }
-  config = JSON.parse(fs.readFileSync(CONFIG_PATH))
-} catch(err) {
-	console.err(err)
-  process.exit(1)
-}
+app.use(cookieParser())
 
 //****************************************************************************************************
 //Routing
@@ -41,21 +19,26 @@ app.get('/', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
-  let r = {
-    error: true,
-    message: null
+  res.send(JSON.stringify(config.login(req.body.user, req.body.password)))
+})
+
+app.post('/authentification', (req, res) => {
+  let user = config.getUserByToken(req.cookies.token)
+
+  if (user) {
+    config.users[user].token = config.generateToken()
+    config.save()
   }
-  if (typeof config.users[req.body.login] != 'undefined') {
-    if (config.users[req.body.login].password === req.body.password) {
-      r.error = false
-      r.message = 'Logged'
-    } else {
-      r.message = 'Wrong password'
-    }
-  } else {
-    r.message = 'Unknown user'
-  }
-  res.send(JSON.stringify(r))
+
+  res.send(JSON.stringify({
+    error: user == null,
+    user: user,
+    token: user ? config.users[user].token : null
+  }))
+})
+
+app.post('/logout', (req, res) => {
+  res.send(JSON.stringify(config.deleteToken(req.body.token)))
 })
 
 app.get('*', (req, res) => {

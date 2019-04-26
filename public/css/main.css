@@ -97,3 +97,27 @@ html, body{
   width: 100%;
   height: 100%;
 }
+
+
+/****************************************************************************************************/
+/* Elements */
+
+#content {
+  position: fixed;
+  top: 60px;
+  left: 240px;
+  overflow: hidden;
+  width: calc(100% - 240px);
+  height: calc(100% - 60px);
+}
+
+#content > div {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: none;
+}
+
+#content > div.visible {
+  display: block;
+}
