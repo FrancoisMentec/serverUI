@@ -67,6 +67,8 @@
 /* Variables */
 
 :root {
+  --background: #323232;
+  --background-dark: #282828;
   --primary: #212121;
   --primary-light: #484848;
   --primary-text: #ffffff;
@@ -83,7 +85,7 @@ html, body{
 	padding: 0;
 	margin: 0;
 	font-family: Roboto-Regular;
-	background-color: var(--primary);
+	background-color: var(--background);
   color: var(--primary-text);
 }
 

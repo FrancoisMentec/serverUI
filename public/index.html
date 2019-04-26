@@ -9,8 +9,11 @@
     <link rel="stylesheet" type="text/css" href="/css/main.css">
 		<link rel="stylesheet" type="text/css" href="/css/components.css">
 		<link rel="stylesheet" type="text/css" href="/css/login.css">
+		<link rel="stylesheet" type="text/css" href="/css/top-bar.css">
+		<link rel="stylesheet" type="text/css" href="/css/side-bar.css">
 	</head>
 	<body>
+		<!-- Login -->
 		<div id="login">
 			<div id="login-form">
 				<h1>Login</h1>
@@ -19,6 +22,16 @@
 				<p id="login-error"></p>
 			</div>
 		</div>
+
+		<!-- Top Bar -->
+		<div id="top-bar">
+
+		</div>
+
+		<!-- Side Bar -->
+		<div id="side-bar">
+
+		</div>
 		<!-- Javascript -->
 		<!-- serverUI -->
 		<script type="text/javascript" src="/js/components.js" charset="utf-8"></script>
@@ -26,7 +39,9 @@
 		<script type="text/javascript" src="/js/login.js" charset="utf-8"></script>
 
 		<script>
-			//serverUI.emit("authentification", {password: "pass"});
+			loginUser.value = 'root'
+			loginPassword.value = 'root'
+			login()
 		</script>
 	</body>
 </html>

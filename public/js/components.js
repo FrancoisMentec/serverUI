@@ -1,5 +1,5 @@
 class TextField extends HTMLElement {
-  constructor() {
+  constructor () {
     super()
 
     this.onEnter = null
@@ -39,6 +39,10 @@ class TextField extends HTMLElement {
 
   get value () {
     return this.input.value
+  }
+
+  set value (val) {
+    this.input.value = val
   }
 
   focus () {
