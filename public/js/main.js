@@ -1,3 +1,16 @@
+let content = document.getElementById('content')
+let panes = {}
+
+for (let c = 0, lc = content.children.length; c < lc; c++) {
+  panes[content.children[c].id] = content.children[c]
+}
+
+function show (id) {
+  for (let c = 0, lc = content.children.length; c < lc; c++) {
+    content.children[c].classList.toggle('visible', content.children[c].id === id)
+  }
+}
+
 function setCookie (name, value, exdays) {
   let d = new Date()
   d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))

@@ -11,6 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="/css/login.css">
 		<link rel="stylesheet" type="text/css" href="/css/top-bar.css">
 		<link rel="stylesheet" type="text/css" href="/css/side-bar.css">
+		<link rel="stylesheet" type="text/css" href="/css/file-explorer.css">
 	</head>
 	<body>
 		<!-- Login -->
@@ -18,8 +19,7 @@
 			<div id="login-form">
 				<h1>Login</h1>
 				<text-field id="login-user" label="User"></text-field><br>
-				<text-field id="login-password" label="Password" type="password"></text-field>
-				<p id="login-error"></p>
+				<text-field id="login-password" label="Password" type="password"></text-field><br>
 				<check-box id="login-remember-me" label="Remember me"></check-box>
 			</div>
 		</div>
@@ -31,23 +31,22 @@
 
 		<!-- Side Bar -->
 		<div id="side-bar">
-
+			<div onclick="show('file-explorer')">Files</div>
 		</div>
 
 		<!-- Content -->
 		<div id="content">
-			<file-explorer></file-explorer>
+			<file-explorer id="file-explorer"></file-explorer>
 		</div>
 		<!-- Javascript -->
 		<!-- serverUI -->
 		<script type="text/javascript" src="/js/components.js" charset="utf-8"></script>
 		<script type="text/javascript" src="/js/main.js" charset="utf-8"></script>
+		<script type="text/javascript" src="/js/file-explorer.js" charset="utf-8"></script>
 		<script type="text/javascript" src="/js/login.js" charset="utf-8"></script>
 
 		<script>
-			/*loginUser.value = 'root'
-			loginPassword.value = 'root'
-			login()*/
+			show('file-explorer')
 		</script>
 	</body>
 </html>

@@ -27,6 +27,9 @@ class TextField extends HTMLElement {
     this._label = document.createElement('label')
     this.appendChild(this._label)
     this.label = this.getAttribute('label')
+
+    this._message = document.createElement('p')
+    this.appendChild(this._message)
   }
 
   set label (val) {
@@ -45,6 +48,10 @@ class TextField extends HTMLElement {
   set value (val) {
     this.input.value = val
     this.updateNotEmpty()
+  }
+
+  set error (val) {
+    this._message.innerHTML = val
   }
 
   updateNotEmpty () {

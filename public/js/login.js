@@ -2,7 +2,6 @@ let loginDiv = document.getElementById('login')
 let loginUser = document.getElementById('login-user')
 let loginRememberMe = document.getElementById('login-remember-me')
 let loginPassword = document.getElementById('login-password')
-let loginError = document.getElementById('login-error')
 
 if (getCookie('token')) {
   fetch('/authentification', {
@@ -19,7 +18,7 @@ if (getCookie('token')) {
 
 {
   let rememberMe = getCookie('login-remember-me')
-  loginRememberMe.value = typeof rememberMe !== 'undefined'
+  loginRememberMe.value = rememberMe != null
     ? rememberMe === 'true'
     : true
 }
@@ -41,6 +40,9 @@ loginPassword.onEnter = () => {
 }
 
 function login() {
+  loginUser.error = ''
+  loginPassword.error = ''
+
   setCookie('login-remember-me', loginRememberMe.value, 30)
   if (loginRememberMe.value) {
     setCookie('login-remembered-user', loginUser.value, 30)
@@ -60,7 +62,12 @@ function login() {
   }).then(res => {
     res.json().then(data => {
       if (data.error) {
-        loginError.innerHTML = data.message
+        if (data.message.includes('user')) {
+          loginUser.error = data.message
+        } else {
+          loginPassword.error = data.message
+        }
+
       } else {
         if (!loginRememberMe.value) {
           loginUser.value = ''

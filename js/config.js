@@ -6,8 +6,7 @@ const DEFAULT_CONFIG = {
   'users': {
     'root': {
       'name': 'root',
-      'password': 'root',
-      'type': 'root'
+      'password': 'root'
     }
   }
 }
@@ -33,7 +32,7 @@ class Config {
       }
       this.config = JSON.parse(fs.readFileSync(CONFIG_PATH))
     } catch(err) {
-    	console.err(err)
+    	console.error(err)
       process.exit(1)
     }
   }
