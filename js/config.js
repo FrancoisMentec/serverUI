@@ -31,9 +31,10 @@ class Config {
         fs.writeFileSync(CONFIG_PATH, JSON.stringify(DEFAULT_CONFIG))
       }
       this.config = JSON.parse(fs.readFileSync(CONFIG_PATH))
-    } catch(err) {
+    } catch (err) {
     	console.error(err)
-      process.exit(1)
+      console.error(new Error('Default config used'))
+      this.config = DEFAULT_CONFIG
     }
   }
 

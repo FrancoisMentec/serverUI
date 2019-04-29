@@ -107,3 +107,35 @@ class Checkbox extends HTMLElement {
 }
 
 customElements.define('check-box', Checkbox)
+
+//****************************************************************************************************
+//ScrollArea
+class ScrollArea extends HTMLElement {
+  constructor () {
+    super()
+
+    this.content = document.createElement('div')
+    this.content.classList.add('content')
+    this.appendChild(this.content, false)
+
+    this.content.addEventListener('scroll', e => {
+      this.classList.toggle('scrolled', this.content.scrollTop > 0)
+    })
+  }
+
+  appendChild (element, content=true) {
+    if (content) {
+      this.content.appendChild(element)
+    } else {
+      super.appendChild(element)
+    }
+  }
+
+  clear () {
+    while (this.content.firstChild) {
+      this.content.removeChild(this.content.firstChild)
+    }
+  }
+}
+
+customElements.define('scroll-area', ScrollArea)

@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser')
 const fs = require('fs')
 const path = require('path')
 
+const mfs = require('./js/my-fs.js')
 const config = require('./js/config.js')
 
 let app = express()
@@ -44,7 +45,8 @@ app.post('/logout', (req, res) => {
   res.send(JSON.stringify(config.deleteToken(req.body.token)))
 })
 
-// File Epxlorer
+//****************************************************************************************************
+// File Explorer
 app.post('/directory-content', (req, res) => {
   let user = config.getUserByToken(req.cookies.token)
   if (user != null && (user === 'root' || config.users[user]['fileAccess'])) {
@@ -77,6 +79,36 @@ app.post('/directory-content', (req, res) => {
         }))
       }
     })
+  } else {
+    res.send(JSON.stringify({
+      error: new Error('Permission denied')
+    }))
+  }
+})
+
+app.post('/copy-files', (req, res) => {
+  let user = config.getUserByToken(req.cookies.token)
+  if (user != null && (user === 'root' || config.users[user]['fileAccess'])) {
+    let r = {
+      error: false,
+      filesError: [],
+      filesSuccess: []
+    }
+    for (let f = 0; f < req.body.files.length; f++) {
+      try {
+        let dest = path.join(req.body.destination, path.basename(req.body.files[f]))
+        mfs.copy(req.body.files[f], dest)
+        r.filesSuccess.push(req.body.files[f])
+      } catch (err) {
+        console.error(err)
+        r.error = true
+        r.filesError.push({
+          file: req.body.files[f],
+          error: err
+        })
+      }
+    }
+    res.send(JSON.stringify(r))
   } else {
     res.send(JSON.stringify({
       error: new Error('Permission denied')
