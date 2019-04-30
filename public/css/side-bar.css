@@ -1,8 +1,34 @@
 #side-bar {
+  box-sizing: border-box;
   position: fixed;
   top: 64px;
   left: 0;
   width: 240px;
   height: calc(100% - 64px);
-  background-color: var(--background-dark)
+  background-color: var(--background);
+  border-right: 1px solid var(--primary);
+}
+
+.app-button {
+  box-sizing: border-box;
+  width: 100%;
+  height: 42px;
+  line-height: 42px;
+  padding-left: 12px;
+  padding-right: 12px;
+  cursor: pointer;
+}
+
+.app-button:hover {
+  background-color: var(--darker);
+}
+
+.app-button .icon {
+  display: inline-block;
+  font-family: material-icons;
+  font-size: 24px;
+  height: 42px;
+  line-height: 42px;
+  vertical-align: top;
+  margin-right: 12px;
 }

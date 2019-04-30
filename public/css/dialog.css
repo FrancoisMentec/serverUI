@@ -1,0 +1,50 @@
+.dialog-wrap {
+  transition: 0.2s;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--lighter);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dialog-wrap.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dialog {
+  transition: 0.2s;
+  position: fixed;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--primary);
+  border-radius: 4px;
+  padding-top: 24px;
+  padding-left: 24px;
+  padding-right: 8px;
+}
+
+.visible .dialog {
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.dialog .title {
+  font-family: roboto-bold;
+  font-size: 1.4em;
+}
+
+.dialog .title, .dialog .content {
+  padding-right: 16px;
+  padding-bottom: 24px;
+}
+
+.dialog .actions {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  text-align: right;
+}

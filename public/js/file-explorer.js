@@ -1,5 +1,5 @@
 class FileExplorer extends HTMLElement {
-  constructor () {
+  constructor (path='/') {
     super()
 
     this._path = null
@@ -16,11 +16,32 @@ class FileExplorer extends HTMLElement {
     this.pathDiv.classList.add('path')
     this.navBar.appendChild(this.pathDiv)
 
+    this.actionBar = document.createElement('div')
+    this.actionBar.classList.add('action-bar')
+    this.navBar.appendChild(this.actionBar)
+
+    this.search = document.createElement('input')
+    this.search.classList.add('search')
+    this.search.setAttribute('placeholder', 'Search')
+    this.actionBar.appendChild(this.search)
+    this.search.addEventListener('keyup', e => {
+      let query = this.search.value.toLowerCase()
+      for (let i = 0; i < this.elements.length; i++) {
+        this.elements[i].visible = this.elements[i].name.toLowerCase().includes(query)
+      }
+    })
+
+    this.renameButton = document.createElement('button')
+    this.renameButton.classList.add('text')
+    this.renameButton.innerHTML = 'RENAME'
+    this.renameButton.addEventListener('click', () => {
+      this.rename()
+    })
+    this.actionBar.appendChild(this.renameButton)
+
     this.content = new ScrollArea()//document.createElement('scroll-area')
     this.content.classList.add('content')
     this.appendChild(this.content)
-
-    this.path = '/'
 
     window.addEventListener('keyup', e => {
       if (this.classList.contains('visible') && e.ctrlKey) {
@@ -34,6 +55,8 @@ class FileExplorer extends HTMLElement {
         }
       }
     })
+
+    this.path = path
   }
 
   get path () {
@@ -100,7 +123,7 @@ class FileExplorer extends HTMLElement {
 
   unselectAll () {
     while (this.selectedElements.length > 0) {
-      this.selectedElements.pop().selected = false
+      this.selectedElements[0].selected = false
     }
   }
 
@@ -135,6 +158,34 @@ class FileExplorer extends HTMLElement {
   refresh () {
     this.path = this.path
   }
+
+  rename () {
+    let dialog = null
+    if (this.selectedElements.length != 1) {
+      dialog = new Dialog('Error', 'Rename need one, and only one, element to be selected.', {
+        'OK': () => {
+          dialog.remove()
+        }
+      })
+    } else {
+      let content = document.createElement('div')
+      content.innerHTML = 'Enter a new name for <b>' + this.selectedElements[0].name + '</b>.<br>'
+      let input = new TextField('Name')
+      input.style.width = '100%';
+      input.value = this.selectedElements[0].name
+      content.appendChild(input)
+      dialog = new Dialog('Rename', content, {
+        'CANCEL': () => {
+          dialog.remove()
+        },
+        'OK': () => {
+          console.log('yolo')
+        }
+      })
+      input.select()
+    }
+    dialog.show()
+  }
 }
 
 customElements.define('file-explorer', FileExplorer)
@@ -147,18 +198,20 @@ class ExplorerElement extends HTMLElement {
 
     this._selected = false
     this.path = params.path
+    this.name = params.name
 
     this.icon = document.createElement('div')
     this.icon.classList.add('icon')
+    this.icon.classList.add(params.type)
     this.icon.innerHTML = params.type === 'directory'
       ? 'folder'
       : 'insert_drive_file'
     this.appendChild(this.icon)
 
-    this.name = document.createElement('div')
-    this.name.classList.add('name')
-    this.name.innerHTML = params.name
-    this.appendChild(this.name)
+    this.nameDiv = document.createElement('div')
+    this.nameDiv.classList.add('name')
+    this.nameDiv.innerHTML = params.name
+    this.appendChild(this.nameDiv)
 
     if (params.type === 'directory') {
       this.addEventListener('dblclick', e => {
@@ -167,8 +220,12 @@ class ExplorerElement extends HTMLElement {
     }
 
     this.addEventListener('click', e => {
-      this.explorer.unselectAll()
-      this.selected = true
+      if (e.ctrlKey) {
+        this.selected = !this.selected
+      } else {
+        this.explorer.unselectAll()
+        this.selected = true
+      }
     })
   }
 
@@ -181,6 +238,18 @@ class ExplorerElement extends HTMLElement {
     this.classList.toggle('selected', val)
     if (val) {
       this.explorer.selectedElements.push(this)
+    } else {
+      let index = this.explorer.selectedElements.indexOf(this)
+      if (index > -1) {
+        this.explorer.selectedElements.splice(index, 1)
+      }
+    }
+  }
+
+  set visible (val) {
+    this.classList.toggle('hidden', !val)
+    if (!val) {
+      this.selected = false
     }
   }
 }

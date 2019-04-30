@@ -1,7 +1,7 @@
 //****************************************************************************************************
 //TextFields
 class TextField extends HTMLElement {
-  constructor () {
+  constructor (label) {
     super()
 
     this.onEnter = null
@@ -26,7 +26,12 @@ class TextField extends HTMLElement {
 
     this._label = document.createElement('label')
     this.appendChild(this._label)
-    this.label = this.getAttribute('label')
+    if (label) {
+      this.label = label
+    } else if (this.hasAttribute('label')) {
+      this.label = this.getAttribute('label')
+    }
+
 
     this._message = document.createElement('p')
     this.appendChild(this._message)
@@ -60,6 +65,10 @@ class TextField extends HTMLElement {
 
   focus () {
     this.input.focus()
+  }
+
+  select () {
+    this.input.select()
   }
 }
 

@@ -63,6 +63,11 @@
     src: url(/font/Roboto/RobotoCondensed-Regular.ttf);
 }
 
+b {
+  font-family: roboto-bold;
+  font-weight: normal;
+}
+
 /****************************************************************************************************/
 /* Variables */
 
@@ -71,10 +76,15 @@
   --background-dark: #282828;
   --primary: #212121;
   --primary-light: #484848;
+  --primary-lighter: #565656;
   --primary-text: #ffffff;
   --secondary: #82ffa5;
+  --secondary-light: #b7ffd7;
+  --secondary-dark: #4bcb75;
   --secondary-text: #000000;
   --danger: #f44336;
+  --darker: rgba(0,0,0,0.2);
+  --lighter: rgba(255,255,255,0.2);
 }
 
 /****************************************************************************************************/

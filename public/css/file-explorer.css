@@ -7,18 +7,46 @@ file-explorer {
 file-explorer .nav-bar {
   box-sizing: border-box;
   width: 100%;
-  height: 64px;
-  line-height: 64px;
+  height: 90px;
+  line-height: 45px;
   background-color: var(--primary-light);
   padding-left: 12px;
   padding-right: 12px;
 }
 
-file-explorer .path {
-  display: inline-block;
-  height: 64px;
-  line-height: 64px;
+file-explorer .path, file-explorer .action-bar {
+  box-sizing: border-box;
+  width: 100%;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  height: 45px;
+}
+
+file-explorer .path > * , file-explorer .action-bar > * {
   vertical-align: top;
+}
+
+file-explorer .path {
+  padding-top: 6px;
+  padding-bottom: 3px;
+  overflow-y: hidden;
+  overflow-x: overlay;
+  white-space: nowrap;
+}
+
+file-explorer .path::-webkit-scrollbar {
+  height: 3px;
+  background-color: transparent;
+}
+
+file-explorer .path::-webkit-scrollbar-thumb {
+  background-color: var(--primary-lighter);
+  height: 3px;
+}
+
+file-explorer .action-bar {
+  padding-top: 3px;
+  padding-bottom: 6px;
 }
 
 file-explorer .path div {
@@ -27,23 +55,36 @@ file-explorer .path div {
   padding-right: 8px;
   cursor: pointer;
   border-radius: 4px;
-  height: 32px;
-  line-height: 32px;
-  vertical-align: middle;
+  height: 36px;
+  line-height: 36px;
 }
 
 file-explorer .path div:hover {
-  background-color: rgba(0,0,0,0.2);
+  background-color: var(--darker);
 }
 
 file-explorer .path span {
   font-family: material-icons;
-  vertical-align: middle;
   font-size: 24px;
+  line-height: 36px;
+}
+
+file-explorer .search {
+  box-sizing: border-box;
+  background-color: var(--primary-lighter);
+  color: var(--primary-text);
+  border: none;
+  border-radius: 4px;
+  width: 280px;
+  height: 36px;
+  line-height: 36px;
+  padding: 0;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 file-explorer .content {
-  height: calc(100% - 64px);
+  height: calc(100% - 82px);
 }
 
 explorer-element {
@@ -56,6 +97,7 @@ explorer-element {
   cursor: pointer;
   padding-left: 12px;
   padding-right: 12px;
+  user-select: none;
 }
 
 explorer-element.selected {
@@ -63,16 +105,33 @@ explorer-element.selected {
   color: var(--secondary-text);
 }
 
+explorer-element.hidden {
+  display: none;
+}
+
 explorer-element > * {
   display: inline-block;
   height: 47px;
   line-height: 47px;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 explorer-element .icon {
   font-family: material-icons;
   font-size: 24px;
+  width: 38px;
+  height: 38px;
+  line-height: 38px;
+  text-align: center;
+  border-radius: 50%;
+}
+
+/*explorer-element.selected .icon {
+  background-color: white;
+}*/
+
+explorer-element .icon.file {
+  color: #4285f4;
 }
 
 explorer-element .name {

@@ -3,6 +3,51 @@ input {
 }
 
 /****************************************************************************************************/
+/* Button */
+
+button {
+  outline: none;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  padding: 0;
+  padding-left: 16px;
+  padding-right: 16px;
+  background-color: var(--secondary);
+  color: var(--secondary-text);
+  font-family: roboto-bold;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+button:first-child {
+  margin-left: 0;
+}
+
+button:hover {
+  background-color: var(--secondary-dark);
+}
+
+button.text, button.icon {
+  background-color: transparent;
+  color: var(--secondary);
+}
+
+button.text:hover, button.icon:hover {
+  background-color: var(--darker);
+}
+
+button.icon {
+  font-family: material-icons;
+  font-size: 24px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+/****************************************************************************************************/
 /* Text fields */
 
 text-field {
