@@ -1,5 +1,5 @@
 class FileExplorer extends HTMLElement {
-  constructor (path='/') {
+  constructor () {
     super()
 
     this._path = null
@@ -78,8 +78,6 @@ class FileExplorer extends HTMLElement {
         }
       }
     })
-
-    this.path = path
   }
 
   get path () {

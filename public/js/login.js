@@ -9,8 +9,7 @@ if (getCookie('token')) {
   }).then(res => {
     res.json().then(data => {
       if (!data.error) {
-        loginDiv.classList.add('logged')
-        setCookie('token', data.token, 30)
+        logged(data)
       }
     })
   })
@@ -67,14 +66,11 @@ function login() {
         } else {
           loginPassword.error = data.message
         }
-
       } else {
         if (!loginRememberMe.value) {
           loginUser.value = ''
         }
-        loginPassword.value = ''
-        loginDiv.classList.add('logged')
-        setCookie('token', data.token, 30)
+        logged(data)
       }
     })
   })
@@ -105,4 +101,11 @@ function logout () {
     })
   })
   deleteCookie('token')
+}
+
+function logged (data) {
+  loginPassword.value = ''
+  loginDiv.classList.add('logged')
+  setCookie('token', data.token, 30)
+  fileExplorer.path = '/'
 }

@@ -1,4 +1,5 @@
 let content = document.getElementById('content')
+let fileExplorer = document.getElementById('file-explorer')
 let panes = {}
 
 for (let c = 0, lc = content.children.length; c < lc; c++) {
