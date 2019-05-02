@@ -116,6 +116,21 @@ app.post('/copy-files', (req, res) => {
   }
 })
 
+app.post('/rename-file', (req, res) => {
+  let user = config.getUserByToken(req.cookies.token)
+  if (user != null && (user === 'root' || config.users[user]['fileAccess'])) {
+    fs.rename(req.body.path, path.join(path.dirname(req.body.path), req.body.name), err => {
+      res.send(JSON.stringify({
+        error: err
+      }))
+    })
+  } else {
+    res.send(JSON.stringify({
+      error: new Error('Permission denied')
+    }))
+  }
+})
+
 app.get('*', (req, res) => {
 	res.redirect('/')
 })

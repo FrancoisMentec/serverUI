@@ -1,5 +1,7 @@
 class Dialog {
-  constructor (title, content, actions) {
+  constructor (title, content, actions, shortcuts) {
+    this._visible = false
+
     this.wrap = document.createElement('div')
     this.wrap.classList.add('dialog-wrap')
     document.body.appendChild(this.wrap)
@@ -38,9 +40,29 @@ class Dialog {
         this.actionsDiv.appendChild(button)
       }
     }
+
+    if (shortcuts) {
+      document.addEventListener('keyup', e => {
+        if (this.visible) {
+          if (typeof shortcuts[e.key] != 'undefined') {
+            e.stopPropagation()
+            if (typeof shortcuts[e.key] == 'string') {
+              actions[shortcuts[e.key]](this, e)
+            } else {
+              shortcuts[e.key](this, e)
+            }
+          }
+        }
+      })
+    }
+  }
+
+  get visible () {
+    return this._visible
   }
 
   set visible (val) {
+    this._visible = val
     this.wrap.classList.toggle('visible', val)
   }
 

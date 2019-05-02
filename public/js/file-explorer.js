@@ -31,13 +31,14 @@ class FileExplorer extends HTMLElement {
       }
     })
 
-    this.renameButton = document.createElement('button')
-    this.renameButton.classList.add('text')
-    this.renameButton.innerHTML = 'RENAME'
-    this.renameButton.addEventListener('click', () => {
+    this.oneElementActions = document.createElement('div')
+    this.oneElementActions.classList.add('actions')
+    this.actionBar.appendChild(this.oneElementActions)
+
+    this.renameButton = new MButton('edit', () => {
       this.rename()
-    })
-    this.actionBar.appendChild(this.renameButton)
+    }, 'text icon', 'Rename')
+    this.oneElementActions.appendChild(this.renameButton)
 
     this.content = new ScrollArea()//document.createElement('scroll-area')
     this.content.classList.add('content')
@@ -45,12 +46,12 @@ class FileExplorer extends HTMLElement {
 
     window.addEventListener('keyup', e => {
       if (this.classList.contains('visible') && e.ctrlKey) {
-        if (e.code === 'KeyC') {
+        if (e.key === 'c') {
           this.clipboard = this.selectedElements.map(f => f.path)
           this.clipboardState = 'copy'
-        } else if (e.code === 'KeyX') {
+        } else if (e.key === 'x') {
           console.log('Cut not implemented')
-        } else if (e.code === 'KeyV') {
+        } else if (e.key === 'v') {
           this.paste()
         }
       }
@@ -121,6 +122,10 @@ class FileExplorer extends HTMLElement {
     })
   }
 
+  checkActionsAvaible () {
+    this.oneElementActions.classList.toggle('visible', this.selectedElements.length == 1)
+  }
+
   unselectAll () {
     while (this.selectedElements.length > 0) {
       this.selectedElements[0].selected = false
@@ -179,10 +184,32 @@ class FileExplorer extends HTMLElement {
           dialog.remove()
         },
         'OK': () => {
-          console.log('yolo')
+          fetch('/rename-file', {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              path: this.selectedElements[0].path,
+              name: input.value
+            })
+          }).then(res => {
+            this.refresh()
+            res.json().then(data => {
+              if (data.error) {
+                console.error(data.error)
+                input.error = data.error.message
+              } else {
+                dialog.remove()
+              }
+            })
+          })
         }
+      }, {
+        'Escape': 'CANCEL',
+        'Enter': 'OK'
       })
-      input.select()
+      input.select(input.value.lastIndexOf('.'))
     }
     dialog.show()
   }
@@ -244,6 +271,7 @@ class ExplorerElement extends HTMLElement {
         this.explorer.selectedElements.splice(index, 1)
       }
     }
+    this.explorer.checkActionsAvaible()
   }
 
   set visible (val) {

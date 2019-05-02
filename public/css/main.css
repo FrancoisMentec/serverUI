@@ -84,6 +84,7 @@ b {
   --secondary-text: #000000;
   --danger: #f44336;
   --darker: rgba(0,0,0,0.2);
+  --darker2: rgba(0,0,0,0.4);
   --lighter: rgba(255,255,255,0.2);
 }
 

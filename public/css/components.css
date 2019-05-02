@@ -5,7 +5,9 @@ input {
 /****************************************************************************************************/
 /* Button */
 
-button {
+button, m-button {
+  position: relative;
+  display: inline-block;
   outline: none;
   box-sizing: border-box;
   border: none;
@@ -21,30 +23,55 @@ button {
   font-family: roboto-bold;
   margin-left: 8px;
   vertical-align: middle;
+  letter-spacing: 0.5px;
 }
 
-button:first-child {
+button:first-child, m-button:first-child {
   margin-left: 0;
 }
 
-button:hover {
+button:hover, m-button:hover {
   background-color: var(--secondary-dark);
 }
 
-button.text, button.icon {
+button.text, button.icon, m-button.text, m-button.icon {
   background-color: transparent;
   color: var(--secondary);
 }
 
-button.text:hover, button.icon:hover {
+button.text:hover, button.icon:hover, m-button.text:hover, m-button.icon:hover {
   background-color: var(--darker);
 }
 
-button.icon {
+button.icon, m-button.icon {
   font-family: material-icons;
   font-size: 24px;
   padding-left: 8px;
   padding-right: 8px;
+  letter-spacing: normal;
+}
+
+m-button .tooltip {
+  transition: 0.2s;
+  opacity: 0;
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--darker2);
+  border-radius: 4px;
+  pointer-events: none;
+  color: var(--primary-text);
+  font-family: roboto-medium;
+  padding: 8px;
+  font-size: 12px;
+  line-height: 1em;
+  letter-spacing: 0.5px;
+}
+
+m-button .tooltip.visible {
+  opacity: 1;
+  top: 40px;
 }
 
 /****************************************************************************************************/

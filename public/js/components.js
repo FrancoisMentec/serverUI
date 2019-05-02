@@ -1,4 +1,56 @@
 //****************************************************************************************************
+// Button
+class MButton extends HTMLElement {
+  constructor (content, action, className, tooltip) {
+    super()
+
+    if (content) {
+      this.innerHTML = content
+    }
+
+    if (action) {
+      this.addEventListener('click', e => {
+        action(e)
+      })
+    }
+
+    if (className) {
+      this.className = className
+    }
+
+    this._tooltip = null
+    this.tooltipDiv = document.createElement('div')
+    this.tooltipDiv.classList.add('tooltip')
+    this.appendChild(this.tooltipDiv)
+
+    if (tooltip) {
+      this.tooltip = tooltip
+    }
+
+    this.addEventListener('mouseenter', e => {
+      console.log('yolo')
+      if (this.tooltip) {
+        this.tooltipDiv.classList.add('visible')
+      }
+    })
+    this.addEventListener('mouseout', e => {
+      this.tooltipDiv.classList.remove('visible')
+    })
+  }
+
+  get tooltip () {
+    return this._tooltip
+  }
+
+  set tooltip (val) {
+    this._tooltip = val
+    this.tooltipDiv.innerHTML = val
+  }
+}
+
+customElements.define('m-button', MButton)
+
+//****************************************************************************************************
 //TextFields
 class TextField extends HTMLElement {
   constructor (label) {
@@ -67,8 +119,17 @@ class TextField extends HTMLElement {
     this.input.focus()
   }
 
-  select () {
-    this.input.select()
+  select (a, b) {
+    if (typeof a != 'undefined') {
+      if (typeof b != 'undefined') {
+        this.input.setSelectionRange(a, b)
+      } else {
+        this.input.setSelectionRange(0, a)
+      }
+    } else {
+      this.input.select()
+    }
+    this.focus()
   }
 }
 
