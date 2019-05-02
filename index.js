@@ -2,6 +2,7 @@ const express = require('express')
 const http = require('http')
 const cookieParser = require('cookie-parser')
 const fs = require('fs')
+const fse = require('fs-extra')
 const path = require('path')
 
 const mfs = require('./js/my-fs.js')
@@ -124,6 +125,34 @@ app.post('/rename-file', (req, res) => {
         error: err
       }))
     })
+  } else {
+    res.send(JSON.stringify({
+      error: new Error('Permission denied')
+    }))
+  }
+})
+
+app.post('/remove-files', (req, res) => {
+  let user = config.getUserByToken(req.cookies.token)
+  if (user != null && (user === 'root' || config.users[user]['fileAccess'])) {
+    let r = {
+      error: false,
+      filesError: [],
+      filesSuccess: []
+    }
+    for (let f = 0; f < req.body.files.length; f++) {
+      try {
+        fse.removeSync(req.body.files[f])
+        r.filesSuccess.push(req.body.files[f])
+      } catch (err) {
+        r.error = true
+        r.filesError.push({
+          file: req.body.files[f],
+          error: err
+        })
+      }
+    }
+    res.send(JSON.stringify(r))
   } else {
     res.send(JSON.stringify({
       error: new Error('Permission denied')

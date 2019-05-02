@@ -28,7 +28,6 @@ class MButton extends HTMLElement {
     }
 
     this.addEventListener('mouseenter', e => {
-      console.log('yolo')
       if (this.tooltip) {
         this.tooltipDiv.classList.add('visible')
       }

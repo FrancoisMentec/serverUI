@@ -5,7 +5,7 @@ class FileExplorer extends HTMLElement {
     this._path = null
     this.elements = []
     this.selectedElements = []
-    this.clipboard = null
+    this.clipboard = []
     this.clipboardState = null
 
     this.navBar = document.createElement('div')
@@ -31,6 +31,29 @@ class FileExplorer extends HTMLElement {
       }
     })
 
+    this.clipboardElementActions = document.createElement('div')
+    this.clipboardElementActions.classList.add('actions')
+    this.actionBar.appendChild(this.clipboardElementActions)
+
+    this.pasteButton = new MButton('content_paste', () => {
+      this.paste()
+    }, 'text icon', 'Paste')
+    this.clipboardElementActions.appendChild(this.pasteButton)
+
+    this.anyElementActions = document.createElement('div')
+    this.anyElementActions.classList.add('actions')
+    this.actionBar.appendChild(this.anyElementActions)
+
+    this.copyButton = new MButton('content_copy', () => {
+      this.copy()
+    }, 'text icon', 'Copy')
+    this.anyElementActions.appendChild(this.copyButton)
+
+    this.removeButton = new MButton('delete', () => {
+      this.remove()
+    }, 'text icon', 'Remove')
+    this.anyElementActions.appendChild(this.removeButton)
+
     this.oneElementActions = document.createElement('div')
     this.oneElementActions.classList.add('actions')
     this.actionBar.appendChild(this.oneElementActions)
@@ -47,8 +70,7 @@ class FileExplorer extends HTMLElement {
     window.addEventListener('keyup', e => {
       if (this.classList.contains('visible') && e.ctrlKey) {
         if (e.key === 'c') {
-          this.clipboard = this.selectedElements.map(f => f.path)
-          this.clipboardState = 'copy'
+          this.copy()
         } else if (e.key === 'x') {
           console.log('Cut not implemented')
         } else if (e.key === 'v') {
@@ -67,7 +89,8 @@ class FileExplorer extends HTMLElement {
   set path (val) {
     val = val.replace(/\\/g, '/')
     this._path = val
-    //this.content.innerHTML = 'Loading...'
+    this.selectedElements = []
+    this.checkActionsAvaible()
 
     while (this.pathDiv.firstChild) {
       this.pathDiv.removeChild(this.pathDiv.firstChild)
@@ -124,12 +147,20 @@ class FileExplorer extends HTMLElement {
 
   checkActionsAvaible () {
     this.oneElementActions.classList.toggle('visible', this.selectedElements.length == 1)
+    this.anyElementActions.classList.toggle('visible', this.selectedElements.length > 0)
+    this.clipboardElementActions.classList.toggle('visible', this.clipboard.length > 0)
   }
 
   unselectAll () {
     while (this.selectedElements.length > 0) {
       this.selectedElements[0].selected = false
     }
+  }
+
+  copy () {
+    this.clipboard = this.selectedElements.map(f => f.path)
+    this.clipboardState = 'copy'
+    this.checkActionsAvaible()
   }
 
   paste () {
@@ -148,11 +179,14 @@ class FileExplorer extends HTMLElement {
       this.refresh()
       res.json().then(data => {
         if (data.error) {
-          console.log('Error')
+          let content = 'Failed to paste :<ul>'
           for (let f of data.filesError) {
-            console.log(f.file)
             console.error(f.error)
+            content += '<li>' + f.file + ' (' + (f.error.message || f.error.code) + ')</li>'
           }
+          content += '</ul>'
+          let dialog = new Dialog('Error', content, {'OK': () => {dialog.remove()}})
+          dialog.show()
         } else {
           console.log(data)
         }
@@ -211,6 +245,44 @@ class FileExplorer extends HTMLElement {
       })
       input.select(input.value.lastIndexOf('.'))
     }
+    dialog.show()
+  }
+
+  remove () {
+    let dialog = new Dialog('Remove', 'Are you sure you want to remove :<ul><li>' + this.selectedElements.map(e => e.name).join('</li><li>') + '</li></ul>', {
+      'CANCEL': () => {
+        dialog.remove()
+      },
+      'OK': () => {
+        dialog.remove()
+        fetch('/remove-files', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            files: this.selectedElements.map(e => e.path)
+          })
+        }).then(res => {
+          this.refresh()
+          res.json().then(data => {
+            if (data.error) {
+              let content = 'Failed to paste :<ul>'
+              for (let f of data.filesError) {
+                console.error(f.error)
+                content += '<li>' + f.file + ' (' + (f.error.message || f.error.code) + ')</li>'
+              }
+              content += '</ul>'
+              let dialog = new Dialog('Error', content, {'OK': () => {dialog.remove()}})
+              dialog.show()
+            }
+          })
+        })
+      }
+    }, {
+      'Escape': 'CANCEL',
+      'Enter': 'OK'
+    })
     dialog.show()
   }
 }
