@@ -4,6 +4,8 @@ class MButton extends HTMLElement {
   constructor (content, action, className, tooltip) {
     super()
 
+    this.tooltipTimeout = null
+
     if (content) {
       this.innerHTML = content
     }
@@ -25,14 +27,21 @@ class MButton extends HTMLElement {
 
     if (tooltip) {
       this.tooltip = tooltip
+    } else if (this.hasAttribute('tooltip')) {
+      this.tooltip = this.getAttribute('tooltip')
     }
 
     this.addEventListener('mouseenter', e => {
       if (this.tooltip) {
-        this.tooltipDiv.classList.add('visible')
+        this.tooltipTimeout = setTimeout(() => {
+          this.tooltipDiv.classList.add('visible')
+        }, 500)
       }
     })
     this.addEventListener('mouseout', e => {
+      if (this.tooltipTimeout) {
+        clearTimeout(this.tooltipTimeout)
+      }
       this.tooltipDiv.classList.remove('visible')
     })
   }

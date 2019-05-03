@@ -67,6 +67,7 @@ m-button .tooltip {
   font-size: 12px;
   line-height: 1em;
   letter-spacing: 0.5px;
+  z-index: 1;
 }
 
 m-button .tooltip.visible {
