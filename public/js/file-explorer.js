@@ -63,6 +63,11 @@ class FileExplorer extends HTMLElement {
     }, 'text icon', 'Rename')
     this.oneElementActions.appendChild(this.renameButton)
 
+    this.newFileButton = new MButton('add_box', () => {
+      this.newFile()
+    }, 'text icon', 'New file')
+    this.actionBar.appendChild(this.newFileButton)
+
     this.content = new ScrollArea()//document.createElement('scroll-area')
     this.content.classList.add('content')
     this.appendChild(this.content)
@@ -280,6 +285,23 @@ class FileExplorer extends HTMLElement {
     }, {
       'Escape': 'CANCEL',
       'Enter': 'OK'
+    })
+    dialog.show()
+  }
+
+  newFile () {
+    let content = document.createElement('form')
+    content.innerHTML = `<text-field style="width: 100%" label="Name"></text-field>
+    <radio-button value="file" name="type" label="File"></radio-button>
+    <radio-button value="directory" name="type" label="Directory"></radio-button>`
+    let dialog = new Dialog('New file', content, {
+      'CANCEL': () => {dialog.remove()},
+      'CREATE': () => {
+        console.log('TODO')
+      }
+    }, {
+      'Escape': 'CANCEL',
+      'Enter': 'CREATE'
     })
     dialog.show()
   }

@@ -68,6 +68,7 @@ m-button .tooltip {
   line-height: 1em;
   letter-spacing: 0.5px;
   z-index: 1;
+  white-space: nowrap;
 }
 
 m-button .tooltip.visible {
@@ -75,6 +76,78 @@ m-button .tooltip.visible {
   top: 40px;
 }
 
+/****************************************************************************************************/
+/* Radio button */
+
+radio-button {
+  display: inline-block;
+  height: 20px;
+  line-height: 20px;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+radio-button:last-child {
+  margin-right: 0;
+}
+
+radio-button > * {
+  vertical-align: top;
+}
+
+input[type=radio] {
+  transition: 0.2s;
+  position: relative;
+  -webkit-appearance: none;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 2px solid var(--primary-light);
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+
+input[type=radio]:checked {
+  border-color: var(--secondary);
+}
+
+input[type=radio]:after {
+  transition: 0.2s;
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
+  background-color: var(--secondary);
+}
+
+input[type=radio]:checked:after {
+  width: 10px;
+  height: 10px;
+}
+
+input[type=radio] + label {
+  transition: 0.2s;
+  display: inline-block;
+  height: 20px;
+  color: var(--primary-light);
+  margin-left: 5px;
+}
+
+radio-button label {
+  cursor: pointer;
+}
+
+input[type=radio]:checked + label {
+  color: var(--secondary);
+}
 /****************************************************************************************************/
 /* Text fields */
 
