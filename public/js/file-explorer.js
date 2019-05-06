@@ -220,7 +220,7 @@ class FileExplorer extends HTMLElement {
         'CANCEL': () => {
           dialog.remove()
         },
-        'OK': () => {
+        'RENAME': () => {
           fetch('/rename-file', {
             method: 'POST',
             headers: {
@@ -244,7 +244,7 @@ class FileExplorer extends HTMLElement {
         }
       }, {
         'Escape': 'CANCEL',
-        'Enter': 'OK'
+        'Enter': 'RENAME'
       })
       input.select(input.value.lastIndexOf('.'))
     }
@@ -256,7 +256,7 @@ class FileExplorer extends HTMLElement {
       'CANCEL': () => {
         dialog.remove()
       },
-      'OK': () => {
+      'REMOVE': () => {
         dialog.remove()
         fetch('/remove-files', {
           method: 'POST',
@@ -284,26 +284,51 @@ class FileExplorer extends HTMLElement {
       }
     }, {
       'Escape': 'CANCEL',
-      'Enter': 'OK'
+      'Enter': 'REMOVE'
     })
     dialog.show()
   }
 
   newFile () {
-    let content = document.createElement('form')
-    content.innerHTML = `<text-field style="width: 100%" label="Name"></text-field>
-    <radio-button value="file" name="type" label="File"></radio-button>
-    <radio-button value="directory" name="type" label="Directory"></radio-button>`
+    let content = document.createElement('div')
+    let name = new TextField('Name')
+    name.style.width = '100%'
+    content.appendChild(name)
+    let file = new RadioButton('File', null, 'type', true)
+    content.appendChild(file)
+    let directory = new RadioButton('Directory', null, 'type')
+    content.appendChild(directory)
     let dialog = new Dialog('New file', content, {
       'CANCEL': () => {dialog.remove()},
       'CREATE': () => {
-        console.log('TODO')
+        dialog.remove()
+        fetch('/create-file', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: name.value,
+            path: this.path,
+            type: file.checked ? 'file' : 'directory'
+          })
+        }).then(res => {
+          this.refresh()
+          res.json().then(data => {
+            if (data.error) {
+              console.error(data.error)
+              let dialog = new Dialog('Error', data.error.message || data.error.code, {'OK': () => {dialog.remove()}})
+              dialog.show()
+            }
+          })
+        })
       }
     }, {
       'Escape': 'CANCEL',
       'Enter': 'CREATE'
     })
     dialog.show()
+    name.focus()
   }
 }
 

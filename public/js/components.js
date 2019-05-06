@@ -221,14 +221,14 @@ customElements.define('scroll-area', ScrollArea)
 //****************************************************************************************************
 // Radio Button
 class RadioButton extends HTMLElement {
-  constructor (label, name) {
+  constructor (label, value, name, checked) {
     super()
 
     this.input = document.createElement('input')
     this.input.setAttribute('type', 'radio')
     this.appendChild(this.input)
     if (name) {
-      this.input.setAttribute('name', label)
+      this.input.setAttribute('name', name)
     } else if (this.hasAttribute('name')) {
       this.input.setAttribute('name', this.getAttribute('name'))
     }
@@ -246,6 +246,8 @@ class RadioButton extends HTMLElement {
       e.stopPropagation()
       this.checked = true
     })
+
+    this.checked = this.hasAttribute('checked') || checked
   }
 
   get checked () {

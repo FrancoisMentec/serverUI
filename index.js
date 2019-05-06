@@ -160,6 +160,29 @@ app.post('/remove-files', (req, res) => {
   }
 })
 
+app.post('/create-file', (req, res) => {
+  let user = config.getUserByToken(req.cookies.token)
+  if (user != null && (user === 'root' || config.users[user]['fileAccess'])) {
+    let p = path.join(req.body.path, req.body.name)
+    let error = false
+    try {
+      if (req.body.type == 'file') {
+        let fd = fs.openSync(p, 'wx')
+        fs.closeSync(fd)
+      } else if (req.body.type == 'directory') {
+        fs.mkdirSync(p)
+      } else {
+        throw new Error('Unknown type : ' + req.body.type)
+      }
+    } catch (err) {
+      error = err
+    }
+    res.send({error: error})
+  } else {
+    res.send({error: new Error('Permission denied')})
+  }
+})
+
 app.get('*', (req, res) => {
 	res.redirect('/')
 })
