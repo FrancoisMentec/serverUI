@@ -13,6 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="/css/top-bar.css">
 		<link rel="stylesheet" type="text/css" href="/css/side-bar.css">
 		<link rel="stylesheet" type="text/css" href="/css/file-explorer.css">
+		<link rel="stylesheet" type="text/css" href="/css/torrent-ui.css">
 	</head>
 	<body>
 		<!-- Login -->
@@ -35,11 +36,13 @@
 		<!-- Side Bar -->
 		<div id="side-bar">
 			<div class="app-button" onclick="show('file-explorer')"><div class="icon">folder</div>Files</div>
+			<div class="app-button" onclick="show('torrent')"><div class="icon">settings_ethernet</div>Torrent</div>
 		</div>
 
 		<!-- Content -->
 		<div id="content">
-			<file-explorer id="file-explorer"></file-explorer>
+			<file-explorer id="file-explorer"></file-explorer><!--
+			--><torrent-ui id="torrent"></torrent-ui>
 		</div>
 		<!-- Javascript -->
 		<!-- serverUI -->
@@ -47,10 +50,12 @@
 		<script type="text/javascript" src="/js/main.js" charset="utf-8"></script>
 		<script type="text/javascript" src="/js/dialog.js" charset="utf-8"></script>
 		<script type="text/javascript" src="/js/file-explorer.js" charset="utf-8"></script>
+		<script type="text/javascript" src="/js/torrent-ui.js" charset="utf-8"></script>
 		<script type="text/javascript" src="/js/login.js" charset="utf-8"></script>
 
 		<script>
-			show('file-explorer')
+			//show('file-explorer')
+			show('torrent')
 		</script>
 	</body>
 </html>

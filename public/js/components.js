@@ -61,13 +61,17 @@ customElements.define('m-button', MButton)
 //****************************************************************************************************
 //TextFields
 class TextField extends HTMLElement {
-  constructor (label) {
+  constructor (label, type='text') {
     super()
 
     this.onEnter = null
 
     this.input = document.createElement('input')
-    this.input.setAttribute('type', this.getAttribute('type'))
+    if (this.hasAttribute('type')) {
+      this.input.setAttribute('type', this.getAttribute('type'))
+    } else {
+      this.input.setAttribute('type', type)
+    }
     this.input.addEventListener('focus', e => {
       this.classList.add('focus')
     })

@@ -3,6 +3,10 @@ const fs = require('fs')
 const CONFIG_PATH = './config.json'
 const DEFAULT_CONFIG = {
   'port': 8000,
+  'deluge': {
+    'url': 'http://127.0.0.1:8112',
+    'password': null
+  },
   'users': {
     'root': {
       'name': 'root',
@@ -44,6 +48,10 @@ class Config {
 
   get users () {
     return this.config.users
+  }
+
+  get deluge () {
+    return this.config.deluge
   }
 
   login (user, password) {
@@ -98,6 +106,12 @@ class Config {
 
   save () {
     fs.writeFile(CONFIG_PATH, JSON.stringify(this.config), () => {})
+  }
+
+  setDelugeInfo (url, password) {
+    this.config.deluge.url = url
+    this.config.deluge.password = password
+    this.save()
   }
 }
 

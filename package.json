@@ -9,6 +9,7 @@
   "author": "François Mentec",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
     "fs-extra": "^7.0.1"

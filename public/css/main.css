@@ -123,13 +123,13 @@ html, body{
   height: calc(100% - 64px);
 }
 
-#content > div {
+#content > * {
   width: 100%;
   height: 100%;
   overflow: auto;
-  display: none;
+  display: block;
 }
 
-#content > div.visible {
-  display: block;
+#content > .hidden {
+  display: none;
 }

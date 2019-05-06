@@ -7,8 +7,9 @@ for (let c = 0, lc = content.children.length; c < lc; c++) {
 }
 
 function show (id) {
+  console.log(id)
   for (let c = 0, lc = content.children.length; c < lc; c++) {
-    content.children[c].classList.toggle('visible', content.children[c].id === id)
+    content.children[c].classList.toggle('hidden', content.children[c].id !== id)
   }
 }
 

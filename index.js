@@ -7,6 +7,7 @@ const path = require('path')
 
 const mfs = require('./js/my-fs.js')
 const config = require('./js/config.js')
+const deluge = require('./deluge/deluge.js')
 
 let app = express()
 let server = http.Server(app)
@@ -14,6 +15,13 @@ let server = http.Server(app)
 app.use(express.static(__dirname + '/public'))
 app.use(express.json())
 app.use(cookieParser())
+
+//****************************************************************************************************
+// Deluge
+
+let delugeClient = config.deluge.password != null
+  ? deluge.Client(config.deluge.url, config.deluge.password)
+  : null
 
 //****************************************************************************************************
 //Routing
@@ -185,6 +193,30 @@ app.post('/create-file', (req, res) => {
 
 app.get('*', (req, res) => {
 	res.redirect('/')
+})
+
+//****************************************************************************************************
+// Deluge
+
+app.post('/deluge/:action', (req, res) => {
+  let user = config.getUserByToken(req.cookies.token)
+  if (user != null && (user === 'root' || config.users[user]['delugeAccess'])) {
+    if (req.params.action === 'login') {
+      config.setDelugeInfo(req.body.url, req.body.password)
+      delugeClient = deluge.Client(config.deluge.url, config.deluge.password, false)
+      delugeClient.login(res => {
+        res.send({error: false})
+      }).catch(err => {
+        res.send({error: err})
+      })
+    } else if (delugeClient == null) {
+      res.send({error: new Error('deluge client is null, you should set deluge url and password in config')})
+    } else {
+      res.send({error: new Error('Unknown action : ' + req.params.action)})
+    }
+  } else {
+    res.send({error: new Error('Permission denied')})
+  }
 })
 
 //****************************************************************************************************
