@@ -68,7 +68,7 @@ class FileExplorer extends HTMLElement {
     }, 'text icon', 'New file')
     this.actionBar.appendChild(this.newFileButton)
 
-    this.content = new ScrollArea()//document.createElement('scroll-area')
+    this.content = new ScrollArea()
     this.content.classList.add('content')
     this.appendChild(this.content)
 

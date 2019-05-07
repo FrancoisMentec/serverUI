@@ -2,21 +2,13 @@ const path = require('path')
 const axios = require('axios')
 
 class Client {
-  constructor (url, password, login=true) {
+  constructor (url, password) {
     this.nextId = 0
     if (!url.endsWith('/')) url += '/'
     this.url = url + 'json'
     this.password = password
     this.headers = {
       'Content-Type': 'application/json'
-    }
-
-    if (login) {
-      this.login().then(r => {
-        console.log('Connected to deluge')
-      }).catch(err => {
-        console.error(err)
-      })
     }
   }
 
@@ -47,8 +39,9 @@ class Client {
       this.request('auth.login', [this.password]).then(res => {
         this.headers['Cookie'] = res.headers['set-cookie'][0].split(';')[0]
         resolve()
-      }).catch(error => {
-        reject(error)
+      }).catch(err => {
+        err.request = null
+        reject(err)
       })
     })
   }

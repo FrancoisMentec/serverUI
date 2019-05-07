@@ -23,6 +23,15 @@ let delugeClient = config.deluge.password != null
   ? deluge.Client(config.deluge.url, config.deluge.password)
   : null
 
+if (delugeClient) {
+  delugeClient.login().then(r => {
+    console.log('Connected to deluge')
+  }).catch(err => {
+    console.error(err)
+    delugeClient = null
+  })
+}
+
 //****************************************************************************************************
 //Routing
 
@@ -202,15 +211,23 @@ app.post('/deluge/:action', (req, res) => {
   let user = config.getUserByToken(req.cookies.token)
   if (user != null && (user === 'root' || config.users[user]['delugeAccess'])) {
     if (req.params.action === 'login') {
-      config.setDelugeInfo(req.body.url, req.body.password)
-      delugeClient = deluge.Client(config.deluge.url, config.deluge.password, false)
-      delugeClient.login(res => {
+      delugeClient = deluge.Client(req.body.url, req.body.password)
+      delugeClient.login().then(() => {
         res.send({error: false})
+        config.setDelugeInfo(req.body.url, req.body.password)
       }).catch(err => {
         res.send({error: err})
+        delugeClient = null
       })
     } else if (delugeClient == null) {
-      res.send({error: new Error('deluge client is null, you should set deluge url and password in config')})
+      res.send({error: 'Deluge client is null, you need to login first'})
+    } else if (req.params.action === 'updateUI') {
+      delugeClient.updateUI(req.body.params).then(data => {
+        res.send({
+          error: false,
+          data: data
+        })
+      }).catch(err => {res.send({error: err})})
     } else {
       res.send({error: new Error('Unknown action : ' + req.params.action)})
     }

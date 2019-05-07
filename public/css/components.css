@@ -24,13 +24,14 @@ button, m-button {
   margin-left: 8px;
   vertical-align: middle;
   letter-spacing: 0.5px;
+  user-select: none;
 }
 
 button:first-child, m-button:first-child {
   margin-left: 0;
 }
 
-button:hover, m-button:hover {
+button:hover, m-button:hover, button:focus, m-button:focus {
   background-color: var(--secondary-dark);
 }
 
@@ -39,7 +40,7 @@ button.text, button.icon, m-button.text, m-button.icon {
   color: var(--secondary);
 }
 
-button.text:hover, button.icon:hover, m-button.text:hover, m-button.icon:hover {
+button.text:hover, button.icon:hover, m-button.text:hover, m-button.icon:hover, button.text:focus, button.icon:focus, m-button.text:focus, m-button.icon:focus {
   background-color: var(--darker);
 }
 
