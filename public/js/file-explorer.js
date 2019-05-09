@@ -31,37 +31,25 @@ class FileExplorer extends HTMLElement {
       }
     })
 
-    this.clipboardElementActions = document.createElement('div')
-    this.clipboardElementActions.classList.add('actions')
-    this.actionBar.appendChild(this.clipboardElementActions)
-
     this.pasteButton = new MButton('content_paste', () => {
       this.paste()
-    }, 'text icon', 'Paste')
-    this.clipboardElementActions.appendChild(this.pasteButton)
-
-    this.anyElementActions = document.createElement('div')
-    this.anyElementActions.classList.add('actions')
-    this.actionBar.appendChild(this.anyElementActions)
+    }, 'text icon', 'Paste', false)
+    this.actionBar.appendChild(this.pasteButton)
 
     this.copyButton = new MButton('content_copy', () => {
       this.copy()
-    }, 'text icon', 'Copy')
-    this.anyElementActions.appendChild(this.copyButton)
+    }, 'text icon', 'Copy', false)
+    this.actionBar.appendChild(this.copyButton)
 
     this.removeButton = new MButton('delete', () => {
       this.remove()
-    }, 'text icon', 'Remove')
-    this.anyElementActions.appendChild(this.removeButton)
-
-    this.oneElementActions = document.createElement('div')
-    this.oneElementActions.classList.add('actions')
-    this.actionBar.appendChild(this.oneElementActions)
+    }, 'text icon', 'Remove', false)
+    this.actionBar.appendChild(this.removeButton)
 
     this.renameButton = new MButton('edit', () => {
       this.rename()
-    }, 'text icon', 'Rename')
-    this.oneElementActions.appendChild(this.renameButton)
+    }, 'text icon', 'Rename', false)
+    this.actionBar.appendChild(this.renameButton)
 
     this.newFileButton = new MButton('add_box', () => {
       this.newFile()
@@ -73,13 +61,18 @@ class FileExplorer extends HTMLElement {
     this.appendChild(this.content)
 
     window.addEventListener('keyup', e => {
-      if (this.classList.contains('visible') && e.ctrlKey) {
-        if (e.key === 'c') {
-          this.copy()
-        } else if (e.key === 'x') {
-          console.log('Cut not implemented')
-        } else if (e.key === 'v') {
-          this.paste()
+      console.log(e)
+      if (!this.classList.contains('hidden')) {
+        if (e.ctrlKey) {
+          if (e.key === 'c') {
+            this.copy()
+          } else if (e.key === 'x') {
+            console.log('Cut not implemented')
+          } else if (e.key === 'v') {
+            this.paste()
+          }
+        } else if (e.key === 'Delete') {
+          this.remove()
         }
       }
     })
@@ -149,9 +142,10 @@ class FileExplorer extends HTMLElement {
   }
 
   checkActionsAvaible () {
-    this.oneElementActions.classList.toggle('visible', this.selectedElements.length == 1)
-    this.anyElementActions.classList.toggle('visible', this.selectedElements.length > 0)
-    this.clipboardElementActions.classList.toggle('visible', this.clipboard.length > 0)
+    this.renameButton.enabled = this.selectedElements.length == 1
+    this.copyButton.enabled = this.selectedElements.length > 0
+    this.removeButton.enabled = this.selectedElements.length > 0
+    this.pasteButton.enabled = this.clipboard.length > 0
   }
 
   unselectAll () {
@@ -252,6 +246,7 @@ class FileExplorer extends HTMLElement {
   }
 
   remove () {
+    if (this.selectedElements.length < 1) return
     let dialog = new Dialog('Remove', 'Are you sure you want to remove :<ul><li>' + this.selectedElements.map(e => e.name).join('</li><li>') + '</li></ul>', {
       'CANCEL': () => {
         dialog.remove()

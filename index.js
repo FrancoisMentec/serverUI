@@ -228,6 +228,8 @@ app.post('/deluge/:action', (req, res) => {
           data: data
         })
       }).catch(err => {res.send({error: err})})
+    } else if (deluge.ALLOWED_ACTIONS.includes(req.params.action)) {
+      delugeClient.request(req.body.params).then(r => {res.send({error: false, data: r.data})}).catch(err => {res.send({error: err})})
     } else {
       res.send({error: new Error('Unknown action : ' + req.params.action)})
     }

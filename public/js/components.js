@@ -1,23 +1,34 @@
 //****************************************************************************************************
 // Button
 class MButton extends HTMLElement {
-  constructor (content, action, className, tooltip) {
+  constructor (content, action, className, tooltip, enabled=true) {
     super()
 
     this.tooltipTimeout = null
+
+    this._enabled = true
+    this.enabled = enabled
 
     if (content) {
       this.innerHTML = content
     }
 
-    if (action) {
+    if (className) {
+      this.className = className
+    }
+
+    this.isToggle = this.classList.contains('toggle')
+    this._toggled = false
+    if (this.isToggle) {
       this.addEventListener('click', e => {
-        action(e)
+        if (this.enabled) this.toggled = !this.toggled
       })
     }
 
-    if (className) {
-      this.className = className
+    if (action) {
+      this.addEventListener('click', e => {
+        if (this.enabled) action(e)
+      })
     }
 
     this._tooltip = null
@@ -46,6 +57,15 @@ class MButton extends HTMLElement {
     })
   }
 
+  get enabled () {
+    return this._enabled
+  }
+
+  set enabled (val) {
+    this._enabled = val
+    this.classList.toggle('disabled', !val)
+  }
+
   get tooltip () {
     return this._tooltip
   }
@@ -53,6 +73,15 @@ class MButton extends HTMLElement {
   set tooltip (val) {
     this._tooltip = val
     this.tooltipDiv.innerHTML = val
+  }
+
+  get toggled () {
+    return this._toggled
+  }
+
+  set toggled (val) {
+    this._toggled = val
+    this.classList.toggle('toggled', val)
   }
 }
 

@@ -9,6 +9,8 @@ class TorrentUI extends HTMLElement {
   constructor () {
     super()
 
+    this.selectedTorrents = []
+
     this.topBar = document.createElement('div')
     this.topBar.classList.add('top-bar')
     this.appendChild(this.topBar)
@@ -22,22 +24,50 @@ class TorrentUI extends HTMLElement {
     sep.className = 'sep'
     this.topBar.appendChild(sep)
 
+    this.showButtonsContainer = document.createElement('span')
+    this.topBar.appendChild(this.showButtonsContainer)
+
+    this.showButtons = []
+
     this.showAllButton = new MButton('all_inclusive', () => {
-      for (let [id, torrent] of Object.entries(this.torrents)) {
-        torrent.visible = true
+      for (let i = 0; i < this.showButtons.length; i++) {
+        this.showAllButton.toggled = true
+        if (this.showButtons[i] != this.showAllButton) {
+          this.showButtons[i].toggled = false
+        }
       }
-    }, 'text icon', 'Show all torrents')
-    this.topBar.appendChild(this.showAllButton)
+      for (let [id, torrent] of Object.entries(this.torrents)) {
+        torrent.visibleState = null
+      }
+    }, 'text icon toggle', 'Show all torrents')
+    this.showAllButton.toggled = true
+    this.showButtons.push(this.showAllButton)
+    this.showButtonsContainer.appendChild(this.showAllButton)
 
     for (let [state, icon] of Object.entries(TORRENTS_STATES_ICONS)) {
       let button = new MButton(icon, () => {
+        button.toggled = true
+        for (let i = 0; i < this.showButtons.length; i++) {
+          if (this.showButtons[i] != button) {
+            this.showButtons[i].toggled = false
+          }
+        }
         for (let [id, torrent] of Object.entries(this.torrents)) {
-          //torrent.visible = torrent.state === state
           torrent.visibleState = state
         }
-      }, 'text icon', 'Show ' + state.toLowerCase() + ' torrents only')
-      this.topBar.appendChild(button)
+      }, 'text icon toggle', 'Show ' + state.toLowerCase() + ' torrents only')
+      this.showButtons.push(button)
+      this.showButtonsContainer.appendChild(button)
     }
+
+    sep = document.createElement('div')
+    sep.className = 'sep'
+    this.topBar.appendChild(sep)
+
+    this.addButton = new MButton('add', () => {
+      this.add()
+    }, 'text icon', 'Add new torrent')
+    this.topBar.appendChild(this.addButton)
 
     this.content = new ScrollArea()
     this.content.classList.add('content')
@@ -83,6 +113,9 @@ class TorrentUI extends HTMLElement {
           })
         })
       }
+    }, {
+      'Escape': 'CANCEL',
+      'Enter': 'LOGIN'
     })
     dialog.show()
     url.focus()
@@ -102,12 +135,12 @@ class TorrentUI extends HTMLElement {
         if (data.error) {
           console.error(data.error)
         } else {
-          console.log(data.data.result.torrents)
+          //console.log(data.data.result.torrents)
           for (let [id, t] of Object.entries(data.data.result.torrents)) {
             if (typeof this.torrents[id] != 'undefined') {
               this.torrents[id].update(t)
             } else {
-              let torrent = new Torrent(t)
+              let torrent = new Torrent(id, t)
               this.torrents[id] = torrent
               this.content.appendChild(torrent)
             }
@@ -119,6 +152,60 @@ class TorrentUI extends HTMLElement {
       })
     })
   }
+
+  resume () {
+    if (this.selectedTorrents.length < 1) return
+    fetch('/deluge/resume', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        params: [this.selectedTorrents.map(t => t.id)]
+      })
+    }).then(res => {
+      res.json().then(data => {
+        console.log(data)
+      })
+    })
+  }
+
+  add () {
+    let content = document.createElement('div')
+    let torrentLink = new TextField('Torrent (magnet, url)')
+    torrentLink.style.width = '100%'
+    content.appendChild(torrentLink)
+    let dialog = new Dialog('Add a new torrent', content, {
+      'CANCEL': () => {dialog.remove()},
+      'ADD': () => {
+        if (torrentLink.value.startsWith('http')) {
+          this.getTorrentInfo(torrentLink.value)
+        }
+      }
+    }, {
+      'Escape': 'CANCEL',
+      'Enter': 'ADD'
+    })
+    dialog.show()
+    torrent.focus()
+  }
+
+  getTorrentInfo (torrent) {
+    return new Promise((resolve, reject) => {
+      if (typeof torrent === 'string' && torrent.startsWith('http')) {
+        fetch('/deluge/web.download_torrent_from_url', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({params: [torrent, '']})
+        }).then(res => {
+          res.json().then(data => {
+            if (data.error) reject(data)
+            else resolve(data)
+          })
+        })
+      }
+    })
+  }
 }
 
 customElements.define('torrent-ui', TorrentUI)
@@ -126,8 +213,10 @@ customElements.define('torrent-ui', TorrentUI)
 // Torrent
 
 class Torrent extends HTMLElement {
-  constructor (data) {
+  constructor (id, data) {
     super()
+
+    this.id = id
 
     this._visibleState = null
 

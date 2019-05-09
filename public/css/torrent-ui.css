@@ -10,8 +10,8 @@ torrent-ui .top-bar {
   height: 64px;
   line-height: 64px;
   background-color: var(--primary-light);
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 torrent-ui .sep {
@@ -20,8 +20,8 @@ torrent-ui .sep {
   height: 32px;
   background-color: var(--primary);
   vertical-align: middle;
-  margin-left: 8px;
-  margin-right: 8px;
+  margin-left: 4px;
+  margin-right: 4px;
 }
 
 torrent-ui .content {
@@ -53,7 +53,7 @@ torrent-e > * {
 }
 
 torrent-e .name {
-  width: calc(100% - 70px - 74px - 34px);
+  width: calc(100% - 70px - 74px - 48px);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -79,7 +79,9 @@ torrent-e .progress-bar {
 }
 
 torrent-e .state {
-  width: 34px;
+  width: 36px;
+  padding-right: 12px;
+  text-align: center;
   font-size: 24px;
   font-family: material-icons;
 }
