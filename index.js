@@ -276,7 +276,8 @@ app.post('/deluge/:action', (req, res) => {
 app.get('/videos/get/:id', (req, res) => {
   let user = config.getUserByToken(req.cookies.token)
   if (user != null && (user === 'root' || config.users[user]['videoAccess'])) {
-    res.sendFile(videos[req.params.id].path)
+    //res.sendFile(videos[req.params.id].path)
+    res.send('Nothing here')
   } else {
     res.send({error: new Error('Permission denied')})
   }
