@@ -80,23 +80,20 @@ app.post('/directory-content', (req, res) => {
       } else {
         let f = []
         for (let i = 0, li = files.length; i < li; i++) {
-          console.log(files[i])
-          if (typeof files[i].name === 'string' && files[i].name.length > 0 && files[i].name !== '.' && files[i].name !== '..') {
-            let filePath = path.join(req.body.path, files[i].name)
-            let fd = {
-              name: files[i].name,
-              path: filePath,
-              type: files[i].isDirectory() ? 'directory' : files[i].isFile() ? 'file' : 'other'
-            }
-            try {
-              let stats = fs.statSync(filePath)
-              fd.size = stats.size
-            } catch (err) {
-              fd.size = null
-              fd.error = err
-            }
-            f.push(fd)
+          let filePath = path.join(req.body.path, files[i].name)
+          let fd = {
+            name: files[i].name,
+            path: filePath,
+            type: files[i].isDirectory() ? 'directory' : files[i].isFile() ? 'file' : 'other'
           }
+          try {
+            let stats = fs.statSync(filePath)
+            fd.size = stats.size
+          } catch (err) {
+            fd.size = null
+            fd.error = err
+          }
+          f.push(fd)
         }
         res.send(JSON.stringify({
           error: false,
