@@ -51,6 +51,11 @@ class FileExplorer extends HTMLElement {
     }, 'text icon', 'Rename', false)
     this.actionBar.appendChild(this.renameButton)
 
+    this.downloadButton = new MButton('get_app', () => {
+      this.download()
+    }, 'text icon', 'Download/Share', false)
+    this.actionBar.appendChild(this.downloadButton)
+
     this.newFileButton = new MButton('add_box', () => {
       this.newFile()
     }, 'text icon', 'New file')
@@ -61,7 +66,6 @@ class FileExplorer extends HTMLElement {
     this.appendChild(this.content)
 
     window.addEventListener('keyup', e => {
-      console.log(e)
       if (!this.classList.contains('hidden')) {
         if (e.ctrlKey) {
           if (e.key === 'c') {
@@ -146,6 +150,7 @@ class FileExplorer extends HTMLElement {
     this.copyButton.enabled = this.selectedElements.length > 0
     this.removeButton.enabled = this.selectedElements.length > 0
     this.pasteButton.enabled = this.clipboard.length > 0
+    this.downloadButton.enabled = this.selectedElements.length == 1 && this.selectedElements[0].type == 'file'
   }
 
   unselectAll () {
@@ -325,6 +330,56 @@ class FileExplorer extends HTMLElement {
     dialog.show()
     name.focus()
   }
+
+  download () {
+    let file = this.selectedElements[0]
+    let content = document.createElement('div')
+    content.innerHTML = 'Time before expiration :<br>'
+    let days = new TextField('Days')
+    days.value = 0
+    days.style.width = '100px'
+    content.appendChild(days)
+    let hours = new TextField('Hours')
+    hours.value = 3
+    hours.style.width = '100px'
+    hours.style.margin = '0 0 0 8px'
+    content.appendChild(hours)
+    let minutes = new TextField('Minutes')
+    minutes.value = 0
+    minutes.style.width = '100px'
+    minutes.style.margin = '0 0 0 8px'
+    content.appendChild(minutes)
+    let link = document.createElement('div')
+    content.appendChild(link)
+    let dialog = new Dialog('Download/Share link generation', content, {
+      'CLOSE': () => {dialog.remove()},
+      'GENERATE': () => {
+        //dialog.remove()
+        fetch('/generate-link', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            path: file.path,
+            days: days.value,
+            hours: hours.value,
+            minutes: minutes.value
+          })
+        }).then(res => {
+          this.refresh()
+          res.json().then(data => {
+            if (data.error) showError(data.error)
+            else {
+              link.innerHTML += `<a href="/download/${data.key}/${file.name}" download="${file.name}">${window.location.origin}/download/${data.key}/${file.name}</a><br>`
+            }
+          })
+        })
+      }
+    }, {
+      'Escape': 'CLOSE',
+      'Enter': 'GENERATE'
+    })
+    dialog.show()
+  }
 }
 
 customElements.define('file-explorer', FileExplorer)
@@ -338,6 +393,7 @@ class ExplorerElement extends HTMLElement {
     this._selected = false
     this.path = params.path
     this.name = params.name
+    this.type = params.type
 
     this.icon = document.createElement('div')
     this.icon.classList.add('icon')

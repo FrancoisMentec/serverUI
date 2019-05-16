@@ -83,3 +83,17 @@ class Dialog {
     }, 200)
   }
 }
+
+function showError (error) {
+  console.error(error)
+  let content = error
+  if (typeof content === 'object') {
+    if (typeof content.message !== 'undefined') {
+      content = content.message
+    } else if (typeof content.code !== 'undefined') {
+      content = content.code
+    }
+  }
+  let dialog = new Dialog('Error', content, {'OK': () => {dialog.remove()}}, {'Enter': 'OK', 'Escape': 'OK'})
+  dialog.show()
+}

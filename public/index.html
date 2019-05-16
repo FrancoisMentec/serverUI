@@ -37,12 +37,21 @@
 		<div id="side-bar">
 			<div class="app-button" onclick="show('file-explorer')"><div class="icon">folder</div>Files</div>
 			<div class="app-button" onclick="show('torrent')"><div class="icon">settings_ethernet</div>Torrent</div>
+			<div class="app-button" onclick="show('video-test')"><div class="icon">movie</div>Video</div>
 		</div>
 
 		<!-- Content -->
 		<div id="content">
 			<file-explorer id="file-explorer"></file-explorer><!--
-			--><torrent-ui id="torrent"></torrent-ui>
+			--><torrent-ui id="torrent"></torrent-ui><!--
+			--><div id="video-test">
+				<video width="320" height="240" controls>
+					<source src="/videos/get/0" type="video/mp4">
+				</video>
+				<video width="320" height="240" autoplay="autoplay" controls>
+					<source src="/video.mp4" type="video/mp4">
+				</video>
+			</div>
 		</div>
 		<!-- Javascript -->
 		<!-- serverUI -->
@@ -54,8 +63,8 @@
 		<script type="text/javascript" src="/js/login.js" charset="utf-8"></script>
 
 		<script>
-			//show('file-explorer')
-			show('torrent')
+			show('file-explorer')
+			//show('torrent')
 		</script>
 	</body>
 </html>

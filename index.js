@@ -8,6 +8,7 @@ const path = require('path')
 const mfs = require('./js/my-fs.js')
 const config = require('./js/config.js')
 const deluge = require('./deluge/deluge.js')
+const video = require('./js/video.js')
 
 let app = express()
 let server = http.Server(app)
@@ -15,6 +16,9 @@ let server = http.Server(app)
 app.use(express.static(__dirname + '/public'))
 app.use(express.json())
 app.use(cookieParser())
+
+let videos = video.scanDir('/Users/Francois/Videos')
+console.log(videos)
 
 //****************************************************************************************************
 // Deluge
@@ -200,8 +204,34 @@ app.post('/create-file', (req, res) => {
   }
 })
 
-app.get('*', (req, res) => {
-	res.redirect('/')
+let shareLinks = {}
+
+app.post('/generate-link', (req, res) => {
+  let user = config.getUserByToken(req.cookies.token)
+  if (user != null && (user === 'root' || config.users[user]['fileAccess'])) {
+    let key = config.generateToken(16)
+    shareLinks[key] = {
+      path: req.body.path,
+      user: user,
+      expire: Date.now() + (req.body.days * 24 * 60 + req.body.hours * 60 + req.body.minutes) * 60 * 1000
+    }
+    res.send({
+      error: false,
+      key: key
+    })
+  } else {
+    res.send({error: new Error('Permission denied')})
+  }
+})
+
+app.get('/download/:key/:name?', (req, res) => {
+  if (typeof shareLinks[req.params.key] === 'undefined') {
+    res.send('Unknown key')
+  } else if (Date.now() > shareLinks[req.params.key].expire) {
+    res.send('Key expired')
+  } else {
+    res.sendFile(shareLinks[req.params.key].path.replace(/\\|\\\\/g, '/'))
+  }
 })
 
 //****************************************************************************************************
@@ -236,6 +266,23 @@ app.post('/deluge/:action', (req, res) => {
   } else {
     res.send({error: new Error('Permission denied')})
   }
+})
+
+//****************************************************************************************************
+// Video
+
+app.get('/videos/get/:id', (req, res) => {
+  let user = config.getUserByToken(req.cookies.token)
+  if (user != null && (user === 'root' || config.users[user]['videoAccess'])) {
+    res.sendFile(videos[req.params.id].path)
+  } else {
+    res.send({error: new Error('Permission denied')})
+  }
+})
+
+// Default redirect
+app.get('*', (req, res) => {
+	res.redirect('/')
 })
 
 //****************************************************************************************************

@@ -75,9 +75,9 @@ class Config {
     return r
   }
 
-  generateToken () {
+  generateToken (length=TOKEN_LENGTH) {
     let token = ''
-    for (let i = 0; i < TOKEN_LENGTH; i++) {
+    for (let i = 0; i < length; i++) {
       token += TOKEN_CHARS[Math.floor(Math.random() * TOKEN_CHARS.length)]
     }
     return token
