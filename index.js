@@ -80,7 +80,7 @@ app.post('/directory-content', (req, res) => {
       } else {
         let f = []
         for (let i = 0, li = files.length; i < li; i++) {
-          if (files[i].name.length > 0 && files[i].name !== '.' && files[i].name !== '..') {
+          if (typeof files[i].name === 'string' && files[i].name.length > 0 && files[i].name !== '.' && files[i].name !== '..') {
             let filePath = path.join(req.body.path, files[i].name)
             let fd = {
               name: files[i].name,
