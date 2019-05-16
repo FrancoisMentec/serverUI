@@ -17,8 +17,8 @@ app.use(express.static(__dirname + '/public'))
 app.use(express.json())
 app.use(cookieParser())
 
-let videos = video.scanDir('/Users/Francois/Videos')
-console.log(videos)
+/*let videos = video.scanDir('/Users/Francois/Videos')
+console.log(videos)*/
 
 //****************************************************************************************************
 // Deluge
