@@ -32,7 +32,7 @@ class Config {
 
     try {
       if (!fs.existsSync(CONFIG_PATH)) {
-        fs.writeFileSync(CONFIG_PATH, JSON.stringify(DEFAULT_CONFIG))
+        fs.writeFileSync(CONFIG_PATH, JSON.stringify(DEFAULT_CONFIG, null, 2))
       }
       this.config = JSON.parse(fs.readFileSync(CONFIG_PATH))
     } catch (err) {
@@ -105,7 +105,7 @@ class Config {
   }
 
   save () {
-    fs.writeFile(CONFIG_PATH, JSON.stringify(this.config), () => {})
+    fs.writeFile(CONFIG_PATH, JSON.stringify(this.config, null, 2), () => {})
   }
 
   setDelugeInfo (url, password) {
